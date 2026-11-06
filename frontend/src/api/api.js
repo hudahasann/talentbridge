@@ -8,6 +8,23 @@ const getHeaders = () => {
   };
 };
 
+// Helper to catch backend crashes
+const handleResponse = async (res) => {
+  if (!res.ok) {
+    // If Vercel crashes, it sends HTML instead of JSON
+    const text = await res.text();
+    let errorMessage = 'An unexpected error occurred.';
+    try {
+      const data = JSON.parse(text);
+      if (data.message) errorMessage = data.message;
+    } catch (e) {
+      errorMessage = `Server error (${res.status}). Please try again later.`;
+    }
+    throw new Error(errorMessage);
+  }
+  return res.json();
+};
+
 export const loginUser = async (email, password) => {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
@@ -15,8 +32,7 @@ export const loginUser = async (email, password) => {
     credentials: 'include',
     body: JSON.stringify({ email, password }),
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Login failed');
+  const data = await handleResponse(res);
   if (data._id) localStorage.setItem('userId', data._id);
   return data;
 };
@@ -28,25 +44,22 @@ export const registerUser = async (userData) => {
     credentials: 'include',
     body: JSON.stringify(userData),
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Registration failed');
+  const data = await handleResponse(res);
   if (data._id) localStorage.setItem('userId', data._id);
   return data;
 };
 
 export const getJobs = async () => {
   const res = await fetch(`${API_URL}/jobs`, { headers: getHeaders() });
-  if (!res.ok) throw new Error('Failed to fetch jobs');
-  return res.json();
+  return handleResponse(res);
 };
 
 export const getMyJobs = async () => {
   const res = await fetch(`${API_URL}/jobs/my-jobs`, {
-    headers: getHeaders(), // <--- THIS IS THE CRUCIAL FIX
+    headers: getHeaders(),
     credentials: 'include',
   });
-  if (!res.ok) throw new Error('Failed to fetch your jobs');
-  return res.json();
+  return handleResponse(res);
 };
 
 export const createJob = async (jobData) => {
@@ -56,9 +69,7 @@ export const createJob = async (jobData) => {
     credentials: 'include',
     body: JSON.stringify(jobData),
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Failed to create job');
-  return data;
+  return handleResponse(res);
 };
 
 export const applyToJob = async (jobId, file) => {
@@ -73,9 +84,7 @@ export const applyToJob = async (jobId, file) => {
     credentials: 'include',
     body: formData,
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Failed to apply');
-  return data;
+  return handleResponse(res);
 };
 
 export const getJobApplications = async (jobId) => {
@@ -83,9 +92,7 @@ export const getJobApplications = async (jobId) => {
     headers: getHeaders(),
     credentials: 'include',
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Failed to fetch applications');
-  return data;
+  return handleResponse(res);
 };
 
 export const updateApplicationStatus = async (id, status, feedback = null) => {
@@ -95,9 +102,7 @@ export const updateApplicationStatus = async (id, status, feedback = null) => {
     credentials: 'include',
     body: JSON.stringify({ status, feedback }),
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Failed to update status');
-  return data;
+  return handleResponse(res);
 };
 
 export const getMyApplications = async () => {
@@ -105,8 +110,5 @@ export const getMyApplications = async () => {
     headers: getHeaders(),
     credentials: 'include',
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Failed to fetch applications');
-  return data;
+  return handleResponse(res);
 };
-

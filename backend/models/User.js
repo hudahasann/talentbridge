@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['applicant', 'employer'], default: 'applicant' },
+  role: { type: String, enum: ['applicant', 'employer', 'recruiter'], default: 'applicant' },
   skills: [{ type: String }],
 }, { timestamps: true });
 userSchema.pre('save', async function (next) {
@@ -13,3 +13,4 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
 });
 export default mongoose.model('User', userSchema);
+
