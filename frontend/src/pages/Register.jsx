@@ -17,16 +17,21 @@ function Register({ setUser, setCurrentView }) {
     try {
       await registerUser(formData);
       setSuccess(true);
-      setTimeout(() => setCurrentView('login'), 2000);
+      setTimeout(() => setCurrentView('login'), 2500);
     } catch (err) { setError(err.message); }
   };
 
   if (success) {
     return (
       <div className="auth-container">
-        <div className="auth-card" style={{ textAlign: 'center' }}>
-          <h2 style={{ color: '#10b981', fontSize: '1.8rem', marginBottom: '1rem' }}>Registration Successful!</h2>
-          <p className="auth-subtitle">Redirecting you to the login page...</p>
+        <div className="auth-card success-card">
+          <div className="success-icon-wrapper">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <h2>Account Created</h2>
+          <p className="auth-subtitle">Your account has been successfully created. Redirecting you to sign in...</p>
         </div>
       </div>
     );
