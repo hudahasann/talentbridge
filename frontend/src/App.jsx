@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -12,14 +12,25 @@ function App() {
   const [user, setUser] = useState(null);
   const [currentView, setCurrentView] = useState('landing');
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setCurrentView(parsedUser.role === 'employer' ? 'dashboard' : 'jobs');
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('userId');
+    setUser(null);
+    setCurrentView('landing');
+  };
+
   return (
     <div className="app-container">
-      <Navbar 
-        user={user} 
-        setUser={setUser} 
-        setCurrentView={setCurrentView} 
-        currentView={currentView} 
-      />
+      <Navbar user={user} setUser={setUser} setCurrentView={setCurrentView} currentView={currentView} handleLogout={handleLogout} />
       
       <main className="main-content">
         {currentView === 'landing' && <Landing setCurrentView={setCurrentView} />}
