@@ -77,31 +77,16 @@ function Register({ setUser, setCurrentView }) {
 
           <div className="input-group">
             <label>I am joining as a...</label>
-            <div className="role-toggle-group">
-              <div 
-                className={`role-toggle-card ${formData.role === 'applicant' ? 'active' : ''}`}
-                onClick={() => setFormData({...formData, role: 'applicant'})}
+            <div className="select-wrapper">
+              <select 
+                value={formData.role} 
+                onChange={(e) => setFormData({...formData, role: e.target.value})}
               >
-                <div className="role-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-                </div>
-                <div className="role-info">
-                  <h4>Job Seeker</h4>
-                  <p>I want to find a job</p>
-                </div>
-              </div>
-              
-              <div 
-                className={`role-toggle-card ${formData.role === 'employer' ? 'active' : ''}`}
-                onClick={() => setFormData({...formData, role: 'employer'})}
-              >
-                <div className="role-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
-                </div>
-                <div className="role-info">
-                  <h4>Employer</h4>
-                  <p>I want to hire talent</p>
-                </div>
+                <option value="applicant">Job Seeker (Looking for a role)</option>
+                <option value="employer">Employer (Looking to hire)</option>
+              </select>
+              <div className="select-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </div>
             </div>
           </div>
