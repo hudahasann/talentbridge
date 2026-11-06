@@ -33,7 +33,8 @@ function Landing({ setCurrentView }) {
             Track applicants through every stage and make data-driven hiring decisions.
           </motion.p>
           <motion.div variants={fadeUp} className="hero-actions">
-            <button className="btn-primary-large" onClick={() => setCurrentView('register')}>
+            {/* CHANGED: Now navigates to login instead of register */}
+            <button className="btn-primary-large" onClick={() => setCurrentView('login')}>
               Start Hiring for Free
             </button>
             <button className="btn-secondary-large" onClick={() => setCurrentView('jobs')}>
@@ -155,6 +156,7 @@ function Landing({ setCurrentView }) {
       >
         <h2>Ready to transform your hiring?</h2>
         <p>Join hundreds of companies using TalentBridge to build better teams.</p>
+        {/* This one still goes to register because it's the final call to action at the bottom of the page */}
         <button className="btn-primary-large" onClick={() => setCurrentView('register')}>
           Get Started for Free
         </button>

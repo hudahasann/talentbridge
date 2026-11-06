@@ -4,6 +4,7 @@ import { loginUser } from '../api/api';
 function Login({ setUser, setCurrentView }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
@@ -14,9 +15,7 @@ function Login({ setUser, setCurrentView }) {
       localStorage.setItem('user', JSON.stringify(data));
       setUser(data);
       setCurrentView(data.role === 'employer' ? 'dashboard' : 'jobs');
-    } catch (err) {
-      setError(err.message);
-    }
+    } catch (err) { setError(err.message); }
   };
 
   return (
@@ -32,10 +31,16 @@ function Login({ setUser, setCurrentView }) {
           </div>
           <div className="input-group">
             <label>Password</label>
-            <input type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <div className="password-input-wrapper">
+              <input type={showPassword ? "text" : "password"} placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <button type="button" className="eye-btn" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'}</button>
+            </div>
           </div>
           <button type="submit" className="full-width">Sign In</button>
         </form>
+        <div className="auth-footer">
+          <p>Don't have an account? <span onClick={() => setCurrentView('register')} className="auth-link">Sign Up</span></p>
+        </div>
       </div>
     </div>
   );
