@@ -1,0 +1,45 @@
+### 1. Register an Employer
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "TechCorp HR",
+  "email": "hr@techcorp.com",
+  "password": "password123",
+  "role": "employer"
+}
+
+### 2. Register an Applicant
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Ali Khan",
+  "email": "ali@example.com",
+  "password": "password123",
+  "role": "applicant"
+}
+
+### 3. Login as Employer
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "hr@techcorp.com",
+  "password": "password123"
+}
+
+### 4. Create a Job (Must run Login first to get the cookie!)
+POST http://localhost:5000/api/jobs
+Content-Type: application/json
+
+{
+  "title": "MERN Stack Developer",
+  "description": "Looking for a junior developer with React and Node experience.",
+  "company": "TechCorp",
+  "location": "Remote",
+  "salary": "$800/month"
+}
+
+### 5. Get All Jobs (Public route)
+GET http://localhost:5000/api/jobs
