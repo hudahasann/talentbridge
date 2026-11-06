@@ -84,7 +84,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 4rem;
-  width: 100vw;
+  width: 100%;
   background-image: 
     linear-gradient(to right, rgba(229, 231, 235, 0.5) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(229, 231, 235, 0.5) 1px, transparent 1px);
@@ -180,7 +180,7 @@ body {
 
 /* --- TRUST BAR --- */
 .trust-bar {
-  text-align: center; padding: 3rem 4rem; width: 100vw;
+  text-align: center; padding: 3rem 4rem; width: 100%;
   background: white; border-bottom: 1px solid var(--border);
 }
 .trust-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2rem; }
@@ -188,7 +188,7 @@ body {
 .company-logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
 
 /* --- FEATURES --- */
-.features-section { padding: 7rem 4rem; width: 100vw; text-align: center; background: var(--bg-alt); }
+.features-section { padding: 7rem 4rem; width: 100%; text-align: center; background: var(--bg-alt); }
 .section-header { margin-bottom: 4rem; }
 .section-header h2 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 1rem; }
 .section-header p { font-size: 1.15rem; color: var(--text-muted); font-weight: 400; }
@@ -210,7 +210,7 @@ body {
 .cta-section { 
   text-align: center; 
   padding: 8rem 4rem; 
-  width: 100vw; 
+  width: 100%; 
   background: #0f172a; /* Premium Dark Slate */
   color: #ffffff; 
   border-top: 1px solid #1e293b;
@@ -243,7 +243,7 @@ body {
 /* --- FOOTER --- */
 .site-footer { 
   padding: 5rem 4rem 3rem; 
-  width: 100vw; 
+  width: 100%; 
   background: #0f172a; 
   color: #ffffff; 
   border-top: 1px solid #1e293b; 
@@ -883,4 +883,24 @@ textarea:focus {
 }
 .main-content {
   flex: 1;
+}
+
+/* --- RESTORE ZOOMED IN FEEL --- */
+.nav-container {
+  max-width: 1200px !important; /* Pulls navbar in slightly */
+}
+
+.hero-section {
+  max-width: 1200px !important; /* Pulls hero section in */
+  margin: 0 auto !important;
+  padding: 5rem 4rem !important; /* Reduces top/bottom spacing slightly */
+}
+
+.hero-title {
+  font-size: 4.2rem !important; /* Makes the big text slightly bigger */
+}
+
+/* Ensure sections fill the screen properly without horizontal scrolling */
+.app-container {
+  overflow-x: hidden;
 }
