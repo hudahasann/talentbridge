@@ -24,7 +24,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
-  cookie: { httpOnly: true, secure: true, maxAge: 1000 * 60 * 60 * 24 }
+  cookie: { httpOnly: true, secure: true, sameSite: 'none', maxAge: 1000 * 60 * 60 * 24 }
 }));
 
 // THIS IS THE NEW LINE YOU ADDED
@@ -36,6 +36,7 @@ app.use('/api/applications', applicationRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 
