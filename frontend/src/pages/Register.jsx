@@ -76,14 +76,14 @@ function Register({ setUser, setCurrentView }) {
           </div>
 
           <div className="input-group">
-            <label>I am joining as a...</label>
+            <label>Role</label>
             <div className="select-wrapper">
               <select 
                 value={formData.role} 
                 onChange={(e) => setFormData({...formData, role: e.target.value})}
               >
-                <option value="applicant">Job Seeker (Looking for a role)</option>
-                <option value="employer">Employer (Looking to hire)</option>
+                <option value="applicant">Applicant</option>
+                <option value="employer">Recruiter</option>
               </select>
               <div className="select-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
