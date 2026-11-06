@@ -185,13 +185,19 @@ body {
 .select-icon { position: absolute; right: 1rem; pointer-events: none; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
 .select-wrapper select option { padding: 1rem; background: white; color: var(--text-main); }
 
-/* --- PROFESSIONAL EYE ICON --- */
+/* --- PROFESSIONAL EYE ICON & HIDING BROWSER DEFAULT --- */
 .password-input-wrapper { position: relative; display: flex; align-items: center; }
 .password-input-wrapper input { width: 100%; padding-right: 3rem; }
+
+.password-input-wrapper input::-ms-reveal,
+.password-input-wrapper input::-ms-clear {
+  display: none;
+}
+
 .eye-icon-btn {
   position: absolute; right: 1rem; background: none; border: none;
   color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
-  padding: 0; transition: color var(--transition-fast);
+  padding: 0; transition: color var(--transition-fast); z-index: 10;
 }
 .eye-icon-btn:hover { color: var(--primary); }
 .eye-icon-btn:focus { outline: none; }
