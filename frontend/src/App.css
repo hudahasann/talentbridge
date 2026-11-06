@@ -838,3 +838,39 @@ textarea:focus {
   color: #991b1b;
   border-color: #fca5a5;
 }
+/* --- NAVBAR LAYOUT FIXES --- */
+.nav-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.brand-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: -1px;
+  color: var(--primary);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
