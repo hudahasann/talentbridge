@@ -171,10 +171,25 @@ body {
 .input-group input, .input-group select { background: white; border: 1px solid var(--border); padding: 0.9rem 1rem; border-radius: 8px; color: var(--text-main); font-size: 1rem; outline: none; font-family: 'Inter', sans-serif; transition: all var(--transition-fast); }
 .input-group input:focus, .input-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); }
 
+/* --- PROFESSIONAL EYE ICON (REPLACED TEXT BUTTON) --- */
 .password-input-wrapper { position: relative; display: flex; align-items: center; }
-.password-input-wrapper input { width: 100%; padding-right: 4.5rem; }
-.eye-btn { position: absolute; right: 1rem; background: none; border: none; color: var(--primary); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: color var(--transition-fast); }
-.eye-btn:hover { color: var(--primary-hover); }
+.password-input-wrapper input { width: 100%; padding-right: 3rem; }
+.eye-icon-btn {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color var(--transition-fast);
+}
+.eye-icon-btn:hover { color: var(--primary); }
+.eye-icon-btn:focus { outline: none; }
+.helper-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.1rem; }
 
 .auth-footer { margin-top: 2rem; text-align: center; font-size: 0.95rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 1.5rem; }
 .auth-link { color: var(--primary); font-weight: 600; cursor: pointer; transition: color var(--transition-fast); }
