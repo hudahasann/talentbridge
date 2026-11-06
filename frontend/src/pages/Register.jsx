@@ -55,7 +55,7 @@ function Register({ setUser, setCurrentView }) {
             <div className="password-input-wrapper">
               <input 
                 type={showPassword ? "text" : "password"} 
-                placeholder="Create a secure password" 
+                placeholder="Enter your password" 
                 value={formData.password} 
                 onChange={(e) => setFormData({...formData, password: e.target.value})} 
                 required 
@@ -82,7 +82,9 @@ function Register({ setUser, setCurrentView }) {
                 className={`role-toggle-card ${formData.role === 'applicant' ? 'active' : ''}`}
                 onClick={() => setFormData({...formData, role: 'applicant'})}
               >
-                <div className="role-icon">🎯</div>
+                <div className="role-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                </div>
                 <div className="role-info">
                   <h4>Job Seeker</h4>
                   <p>I want to find a job</p>
@@ -93,7 +95,9 @@ function Register({ setUser, setCurrentView }) {
                 className={`role-toggle-card ${formData.role === 'employer' ? 'active' : ''}`}
                 onClick={() => setFormData({...formData, role: 'employer'})}
               >
-                <div className="role-icon">🏢</div>
+                <div className="role-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
+                </div>
                 <div className="role-info">
                   <h4>Employer</h4>
                   <p>I want to hire talent</p>
