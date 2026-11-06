@@ -31,12 +31,37 @@ app.use(session({
 // THIS IS THE NEW LINE YOU ADDED
 app.use('/uploads', express.static('uploads'));
 
+
+// --- CRITICAL VERCEL FIX: Check headers for user ID ---
+app.use((req, res, next) => {
+  if (req.headers['x-user-id'] && !req.session.userId) {
+    req.session.userId = req.headers['x-user-id'];
+  }
+  next();
+});
 app.use('/api/auth', authRoutes);
+
+// --- CRITICAL VERCEL FIX: Check headers for user ID ---
+app.use((req, res, next) => {
+  if (req.headers['x-user-id'] && !req.session.userId) {
+    req.session.userId = req.headers['x-user-id'];
+  }
+  next();
+});
 app.use('/api/jobs', jobRoutes);
+
+// --- CRITICAL VERCEL FIX: Check headers for user ID ---
+app.use((req, res, next) => {
+  if (req.headers['x-user-id'] && !req.session.userId) {
+    req.session.userId = req.headers['x-user-id'];
+  }
+  next();
+});
 app.use('/api/applications', applicationRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 

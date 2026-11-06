@@ -42,7 +42,7 @@ export const getJobs = async () => {
 
 export const getMyJobs = async () => {
   const res = await fetch(`${API_URL}/jobs/my-jobs`, {
-    headers: getHeaders(),
+    headers: getHeaders(), // <--- THIS IS THE CRUCIAL FIX
     credentials: 'include',
   });
   if (!res.ok) throw new Error('Failed to fetch your jobs');
