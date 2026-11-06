@@ -904,3 +904,13 @@ textarea:focus {
 .app-container {
   overflow-x: hidden;
 }
+
+/* --- FIX NAVBAR FULL WIDTH & HERO SPACING --- */
+.nav-container {
+  max-width: 100% !important; /* Stretches navbar across the whole screen */
+  padding: 0 4rem !important; /* Pushes logo to left edge, buttons to right edge */
+}
+
+.hero-section {
+  padding: 7rem 4rem !important; /* Restores the original top/bottom breathing room */
+}
