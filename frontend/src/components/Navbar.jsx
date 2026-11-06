@@ -7,7 +7,7 @@ function Navbar({ user, setCurrentView, currentView, handleLogout }) {
             TalentBridge
           </div>
           <div className="nav-links">
-            <button className="nav-link-btn" onClick={() => setCurrentView('jobs')}>Job Board</button>
+            {user && <button className="nav-link-btn" onClick={() => setCurrentView('jobs')}>Job Board</button>}
             {user && user.role === 'applicant' && (
               <button className="nav-link-btn" onClick={() => setCurrentView('my-applications')}>My Applications</button>
             )}
