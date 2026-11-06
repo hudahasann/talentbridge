@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { registerUser } from '../api/api';
 
 function Register({ setUser, setCurrentView }) {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'applicant', skills: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'applicant' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -15,8 +15,7 @@ function Register({ setUser, setCurrentView }) {
     if (!/\d/.test(formData.password)) return setError('Password must contain at least one number.');
 
     try {
-      const payload = { ...formData, skills: formData.skills.split(',').map(s => s.trim()).filter(Boolean) };
-      await registerUser(payload);
+      await registerUser(formData);
       setSuccess(true);
       setTimeout(() => setCurrentView('login'), 2000);
     } catch (err) { setError(err.message); }
@@ -43,12 +42,12 @@ function Register({ setUser, setCurrentView }) {
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="input-group">
             <label>Full Name</label>
-            <input type="text" placeholder="Enter your full name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required />
+            <input type="text" placeholder="John Doe" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required />
           </div>
           
           <div className="input-group">
             <label>Email Address</label>
-            <input type="email" placeholder="Enter your email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required />
+            <input type="email" placeholder="name@company.com" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required />
           </div>
           
           <div className="input-group">
@@ -56,7 +55,7 @@ function Register({ setUser, setCurrentView }) {
             <div className="password-input-wrapper">
               <input 
                 type={showPassword ? "text" : "password"} 
-                placeholder="Enter your password" 
+                placeholder="Create a secure password" 
                 value={formData.password} 
                 onChange={(e) => setFormData({...formData, password: e.target.value})} 
                 required 
@@ -74,23 +73,34 @@ function Register({ setUser, setCurrentView }) {
                 )}
               </button>
             </div>
-            <span className="helper-text">Must be 8+ characters and contain a number.</span>
           </div>
 
           <div className="input-group">
-            <label>I am a...</label>
-            <select value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})}>
-              <option value="applicant">Job Seeker (Applicant)</option>
-              <option value="employer">Employer (Hiring)</option>
-            </select>
-          </div>
-          
-          {formData.role === 'applicant' && (
-            <div className="input-group">
-              <label>Skills</label>
-              <input type="text" placeholder="e.g. React, Node.js, MongoDB" value={formData.skills} onChange={(e) => setFormData({...formData, skills: e.target.value})} />
+            <label>I am joining as a...</label>
+            <div className="role-toggle-group">
+              <div 
+                className={`role-toggle-card ${formData.role === 'applicant' ? 'active' : ''}`}
+                onClick={() => setFormData({...formData, role: 'applicant'})}
+              >
+                <div className="role-icon">🎯</div>
+                <div className="role-info">
+                  <h4>Job Seeker</h4>
+                  <p>I want to find a job</p>
+                </div>
+              </div>
+              
+              <div 
+                className={`role-toggle-card ${formData.role === 'employer' ? 'active' : ''}`}
+                onClick={() => setFormData({...formData, role: 'employer'})}
+              >
+                <div className="role-icon">🏢</div>
+                <div className="role-info">
+                  <h4>Employer</h4>
+                  <p>I want to hire talent</p>
+                </div>
+              </div>
             </div>
-          )}
+          </div>
           
           <button type="submit" className="full-width">Sign Up</button>
         </form>

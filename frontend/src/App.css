@@ -162,7 +162,7 @@ body {
 
 /* --- AUTH FORMS (PROFESSIONAL OVERHAUL) --- */
 .auth-container { min-height: calc(100vh - 72px); display: flex; align-items: center; justify-content: center; padding: 2rem; background: var(--bg-alt); }
-.auth-card { background: white; border: 1px solid var(--border); padding: 3rem; border-radius: 16px; width: 100%; max-width: 450px; box-shadow: var(--shadow-lg); }
+.auth-card { background: white; border: 1px solid var(--border); padding: 3rem; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: var(--shadow-lg); }
 .auth-card h2 { font-size: 2rem; margin-bottom: 0.5rem; font-weight: 800; text-align: center; color: var(--text-main); letter-spacing: -0.5px; }
 .auth-subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 2rem; text-align: center; }
 .auth-form { display: flex; flex-direction: column; gap: 1.25rem; }
@@ -171,7 +171,7 @@ body {
 .input-group input, .input-group select { background: white; border: 1px solid var(--border); padding: 0.9rem 1rem; border-radius: 8px; color: var(--text-main); font-size: 1rem; outline: none; font-family: 'Inter', sans-serif; transition: all var(--transition-fast); }
 .input-group input:focus, .input-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); }
 
-/* --- PROFESSIONAL EYE ICON (REPLACED TEXT BUTTON) --- */
+/* --- PROFESSIONAL EYE ICON --- */
 .password-input-wrapper { position: relative; display: flex; align-items: center; }
 .password-input-wrapper input { width: 100%; padding-right: 3rem; }
 .eye-icon-btn {
@@ -189,12 +189,66 @@ body {
 }
 .eye-icon-btn:hover { color: var(--primary); }
 .eye-icon-btn:focus { outline: none; }
-.helper-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.1rem; }
 
 .auth-footer { margin-top: 2rem; text-align: center; font-size: 0.95rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 1.5rem; }
 .auth-link { color: var(--primary); font-weight: 600; cursor: pointer; transition: color var(--transition-fast); }
 .auth-link:hover { color: var(--primary-hover); text-decoration: underline; }
 .error-alert { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 1rem; border-radius: 8px; font-size: 0.95rem; margin-bottom: 1rem; }
+
+/* --- PREMIUM ROLE TOGGLE CARDS --- */
+.role-toggle-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.25rem;
+}
+
+.role-toggle-card {
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.role-toggle-card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-alt);
+  transform: translateY(-2px);
+}
+
+.role-toggle-card.active {
+  border-color: var(--primary);
+  background: #eff6ff;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.role-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.role-info h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.15rem;
+}
+
+.role-info p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.role-toggle-card.active .role-info h4 {
+  color: var(--primary);
+}
 
 /* --- DASHBOARD & JOBS --- */
 .dashboard-container { padding: 4rem 5%; max-width: 1400px; margin: 0 auto; min-height: calc(100vh - 72px); background: var(--bg-alt); }
