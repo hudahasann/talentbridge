@@ -10,8 +10,8 @@ function Applicants({ job, onClose }) {
   const fetchApplicants = async () => {
     try {
       const data = await getJobApplications(job._id);
-      // Make sure to access the array correctly
-      setApplicants(data.applications || data);
+      // FIXED: Ensure we get the array correctly
+      setApplicants(Array.isArray(data) ? data : data.applications || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -101,12 +101,12 @@ function Applicants({ job, onClose }) {
                           
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
                             
-                            {/* FIXED: Changed from app.resumeLink to app.resume */}
+                            {/* FIXED: The href is now the base64 string */}
                             <a 
                               href={app.resume} 
                               target="_blank" 
                               rel="noreferrer" 
-                              style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: '600' }}
+                              style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: '600', textDecoration: 'underline', cursor: 'pointer' }}
                             >
                               Resume
                             </a>
