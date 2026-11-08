@@ -1,14 +1,9 @@
 import multer from 'multer';
 import path from 'path';
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename(req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
+// VERCEL FIX: Use memoryStorage instead of diskStorage.
+// Vercel's file system is read-only, so files must be held in memory.
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   const filetypes = /pdf|doc|docx/;
@@ -16,8 +11,13 @@ const fileFilter = (req, file, cb) => {
   if (extname) {
     return cb(null, true);
   }
-  cb('Error: Only PDFs and Word docs are allowed!');
+  cb(new Error('Only PDFs and Word docs are allowed!'));
 };
 
-const upload = multer({ storage, fileFilter });
+const upload = multer({ 
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 } // Max 5MB
+});
+
 export default upload;
