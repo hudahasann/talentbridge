@@ -9,12 +9,24 @@ function Onboarding({ user, setUser, setCurrentView }) {
   const [skillInput, setSkillInput] = useState('');
   const [skills, setSkills] = useState(user?.skills || []);
   
-  // New fields for photos
+  // Base64 image states
   const [profileImage, setProfileImage] = useState(user?.profileImage || '');
   const [coverImage, setCoverImage] = useState(user?.coverImage || '');
 
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Helper to handle image selection and convert to Base64
+  const handleImageUpload = (e, setter) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setter(reader.result); // This sets the base64 string
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleAddSkill = (e) => {
     e.preventDefault();
@@ -53,7 +65,6 @@ function Onboarding({ user, setUser, setCurrentView }) {
       <div className="onboarding-container">
         <div className="profile-view-card">
           
-          {/* Cover Photo */}
           <div className="profile-header-banner" style={user?.coverImage ? { backgroundImage: `url(${user.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
             <div className="profile-avatar-large">
               {user?.profileImage ? (
@@ -116,15 +127,30 @@ function Onboarding({ user, setUser, setCurrentView }) {
 
         <form onSubmit={handleSubmit} className="onboarding-form">
           
-          {/* Image URL inputs for now */}
+          {/* IMAGE UPLOAD SECTION */}
           <div className="form-row">
             <div className="input-group">
-              <label>Profile Photo URL</label>
-              <input type="text" placeholder="https://..." value={profileImage} onChange={(e) => setProfileImage(e.target.value)} />
+              <label>Profile Photo</label>
+              <div className="image-upload-wrapper">
+                {profileImage && <img src={profileImage} alt="Preview" className="image-preview-circle" />}
+                <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setProfileImage)} className="file-input-hidden" id="profile-upload" />
+                <label htmlFor="profile-upload" className="btn-outline-small" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Upload Photo
+                </label>
+              </div>
             </div>
+            
             <div className="input-group">
-              <label>Cover Photo URL</label>
-              <input type="text" placeholder="https://..." value={coverImage} onChange={(e) => setCoverImage(e.target.value)} />
+              <label>Cover Photo</label>
+              <div className="image-upload-wrapper">
+                {coverImage && <img src={coverImage} alt="Preview" className="image-preview-banner" />}
+                <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setCoverImage)} className="file-input-hidden" id="cover-upload" />
+                <label htmlFor="cover-upload" className="btn-outline-small" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Upload Cover
+                </label>
+              </div>
             </div>
           </div>
 
