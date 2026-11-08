@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { applyToJob } from '../api/api';
 import { formatDate } from '../utils/formatDate';
 
@@ -7,8 +7,15 @@ function JobDetails({ job, user, onBack }) {
   const [file, setFile] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const fileInputRef = useRef(null);
 
   if (!job) return null;
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
 
   const handleApply = async (e) => {
     e.preventDefault();
@@ -41,7 +48,6 @@ function JobDetails({ job, user, onBack }) {
       </div>
 
       <div className="job-details-container">
-        {/* LEFT COLUMN */}
         <div className="job-main-content">
           <div className="job-title-section">
             <h1>{job.title}</h1>
@@ -67,7 +73,6 @@ function JobDetails({ job, user, onBack }) {
           </div>
         </div>
 
-        {/* RIGHT COLUMN */}
         <div className="job-sidebar">
           <div className="apply-card">
             <div className="salary-display">
@@ -86,7 +91,6 @@ function JobDetails({ job, user, onBack }) {
               </div>
             </div>
 
-            {/* ONLY APPLICANTS CAN SEE THE APPLY BUTTON */}
             {user && user.role === 'applicant' ? (
               <button className="btn-primary-large full-width" onClick={() => setShowApplyModal(true)}>
                 Apply for this Job
@@ -104,7 +108,6 @@ function JobDetails({ job, user, onBack }) {
         </div>
       </div>
 
-      {/* APPLY MODAL */}
       {showApplyModal && (
         <div className="modal-overlay">
           <div className="auth-card" style={{ maxWidth: '500px', width: '100%', animation: 'slideUpFade 0.3s ease-out' }}>
@@ -118,21 +121,41 @@ function JobDetails({ job, user, onBack }) {
               </div>
             ) : (
               <>
-                <h2 style={{ marginBottom: '0.5rem' }}>Apply for {job.title}</h2>
-                <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>at {job.company}</p>
+                <h2 style={{ marginBottom: '0.5rem', textAlign: 'center' }}>Apply for this Job</h2>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', textAlign: 'center' }}>{job.title} at {job.company}</p>
                 
                 <form onSubmit={handleApply} className="auth-form">
                   {error && <div className="error-alert">{error}</div>}
+                  
+                  {/* PREMIUM FILE UPLOAD ZONE */}
                   <div className="input-group">
-                    <label>Upload Resume (PDF or Word)</label>
-                    <input 
-                      type="file" 
-                      accept=".pdf,.doc,.docx"
-                      onChange={(e) => setFile(e.target.files[0])} 
-                      required 
-                      style={{ padding: '0.5rem', border: '1px solid var(--border)', borderRadius: '8px' }}
-                    />
+                    <label>Resume / CV</label>
+                    <div 
+                      className="file-dropzone" 
+                      onClick={() => fileInputRef.current.click()}
+                    >
+                      <input 
+                        type="file" 
+                        accept=".pdf,.doc,.docx"
+                        onChange={handleFileChange} 
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                      />
+                      {file ? (
+                        <div className="file-selected">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                          <span className="file-name">{file.name}</span>
+                        </div>
+                      ) : (
+                        <div className="file-placeholder">
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                          <span className="file-text">Click to upload or drag and drop</span>
+                          <span className="file-subtext">PDF, DOC, or DOCX (max. 5MB)</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
+
                   <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                     <button type="button" className="btn-secondary-large" onClick={() => setShowApplyModal(false)} style={{ flex: 1 }}>Cancel</button>
                     <button type="submit" className="btn-primary-large" style={{ flex: 1 }}>Submit Application</button>
