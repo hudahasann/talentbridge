@@ -67,8 +67,11 @@ export const updateProfile = async (req, res) => {
     user.headline = headline || user.headline;
     user.bio = bio || user.bio;
     user.skills = skills || user.skills;
-    user.profileImage = profileImage || user.profileImage;
-    user.coverImage = coverImage || user.coverImage;
+    
+    // CRITICAL FIX: Explicitly check for empty strings
+    user.profileImage = profileImage !== undefined ? profileImage : user.profileImage;
+    user.coverImage = coverImage !== undefined ? coverImage : user.coverImage;
+    
     user.profileComplete = true; 
 
     const updatedUser = await user.save();
