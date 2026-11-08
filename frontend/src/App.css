@@ -261,7 +261,11 @@ body {
 /* Truncates long descriptions to 3 lines so cards stay equal height */
 .job-desc { 
   color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem; flex: 1; 
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; 
+  display: -webkit-box; 
+  -webkit-line-clamp: 3; 
+  line-clamp: 3; /* Standard property added to fix VS Code warning */
+  -webkit-box-orient: vertical; 
+  overflow: hidden; 
 }
 
 .job-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 1.25rem; margin-top: auto; }
