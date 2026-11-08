@@ -2,7 +2,7 @@
 
 :root {
   --bg-main: #ffffff;
-  --bg-alt: #f1f5f9; /* Slightly darker gray so the white card pops */
+  --bg-alt: #f1f5f9;
   --text-main: #0f172a;
   --text-muted: #64748b;
   --primary: #2563eb;
@@ -78,8 +78,8 @@ body {
 .btn-secondary-large { background: white; border: 1px solid var(--border); color: var(--text-main); padding: 0.9rem 2rem; border-radius: 10px; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: all var(--transition-normal); }
 .btn-secondary-large:hover { background: var(--bg-alt); border-color: var(--border-hover); transform: translateY(-2px); }
 
-.btn-outline-small { background: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all var(--transition-fast); white-space: nowrap; }
-.btn-outline-small:hover { background: var(--bg-alt); border-color: var(--text-muted); }
+.btn-outline-small { background: white; border: 1px solid var(--border); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all var(--transition-fast); display: flex; align-items: center; gap: 0.5rem; }
+.btn-outline-small:hover { background: var(--bg-alt); border-color: var(--text-main); }
 
 /* --- AUTH FORMS --- */
 .auth-container { min-height: calc(100vh - 72px); display: flex; align-items: center; justify-content: center; padding: 2rem; background: var(--bg-alt); }
@@ -179,7 +179,6 @@ body {
   flex: 1;
 }
 
-/* CHANGED TO BLUE */
 .add-skill-btn {
   background: var(--primary); 
   color: white;
@@ -226,6 +225,22 @@ body {
   transition: color var(--transition-fast);
 }
 .skill-tag button:hover { color: #b91c1c; }
+
+/* --- PROFILE VIEW MODE (READ ONLY) --- */
+.profile-view-card { background: white; border-radius: 24px; box-shadow: var(--shadow-xl); border: 1px solid var(--border); width: 100%; max-width: 800px; overflow: hidden; animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+.profile-header-banner { height: 160px; background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); position: relative; }
+
+.profile-avatar-large { position: absolute; bottom: -50px; left: 3rem; width: 110px; height: 110px; background: white; border: 4px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 800; color: var(--primary); box-shadow: var(--shadow-md); }
+
+.profile-view-content { padding: 4rem 3rem 3rem; }
+.profile-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
+.profile-title-row h1 { font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem; letter-spacing: -1px; }
+.profile-headline-text { color: var(--primary); font-size: 1.15rem; font-weight: 600; }
+
+.profile-section { margin-bottom: 2.5rem; }
+.profile-section h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+.profile-section p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; white-space: pre-wrap; }
 
 /* --- JOB DETAILS PAGE --- */
 .job-details-page { background: var(--bg-alt); min-height: calc(100vh - 72px); padding: 2rem 4rem 6rem; }
