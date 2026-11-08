@@ -117,12 +117,12 @@ body {
 .file-input-hidden { display: none; }
 
 .trash-btn {
-  background: #fef2f2;
-  color: #ef4444;
-  border: 1px solid #fecaca;
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
   border-radius: 6px;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,9 +130,8 @@ body {
   transition: all var(--transition-fast);
 }
 .trash-btn:hover {
-  background: #fee2e2;
-  color: #dc2626;
-  border-color: #fca5a5;
+  background: #f1f5f9;
+  color: #ef4444;
 }
 
 /* Profile View */
