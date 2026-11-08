@@ -25,7 +25,7 @@ function JobDetails({ job, user, onBack }) {
         setShowApplyModal(false);
         setSuccess(false);
         setFile(null);
-      }, 2000);
+      }, 2500);
     } catch (err) {
       setError(err.message);
     }
@@ -41,6 +41,7 @@ function JobDetails({ job, user, onBack }) {
       </div>
 
       <div className="job-details-container">
+        {/* LEFT COLUMN */}
         <div className="job-main-content">
           <div className="job-title-section">
             <h1>{job.title}</h1>
@@ -66,6 +67,7 @@ function JobDetails({ job, user, onBack }) {
           </div>
         </div>
 
+        {/* RIGHT COLUMN */}
         <div className="job-sidebar">
           <div className="apply-card">
             <div className="salary-display">
@@ -84,10 +86,17 @@ function JobDetails({ job, user, onBack }) {
               </div>
             </div>
 
-            {user && user.role === 'applicant' && (
+            {/* ONLY APPLICANTS CAN SEE THE APPLY BUTTON */}
+            {user && user.role === 'applicant' ? (
               <button className="btn-primary-large full-width" onClick={() => setShowApplyModal(true)}>
                 Apply for this Job
               </button>
+            ) : (
+              !user && (
+                <button className="btn-primary-large full-width" onClick={() => alert("Please log in as an applicant to apply.")}>
+                  Log in to Apply
+                </button>
+              )
             )}
             
             <p className="apply-note">Takes less than 2 minutes to apply.</p>
@@ -95,34 +104,41 @@ function JobDetails({ job, user, onBack }) {
         </div>
       </div>
 
+      {/* APPLY MODAL */}
       {showApplyModal && (
         <div className="modal-overlay">
-          <div className="auth-card" style={{ maxWidth: '500px', width: '100%' }}>
-            <h2 style={{ marginBottom: '0.5rem' }}>Apply for {job.title}</h2>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>at {job.company}</p>
-            
+          <div className="auth-card" style={{ maxWidth: '500px', width: '100%', animation: 'slideUpFade 0.3s ease-out' }}>
             {success ? (
-              <div style={{ background: '#dcfce7', color: '#15803d', padding: '1.5rem', borderRadius: '8px', textAlign: 'center', fontWeight: '600' }}>
-                Application submitted successfully!
+              <div className="success-card" style={{ padding: '2rem 0' }}>
+                <div className="success-icon-wrapper">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <h2>Application Sent</h2>
+                <p className="auth-subtitle">Your application for {job.title} has been submitted successfully.</p>
               </div>
             ) : (
-              <form onSubmit={handleApply} className="auth-form">
-                {error && <div className="error-alert">{error}</div>}
-                <div className="input-group">
-                  <label>Upload Resume (PDF or Word)</label>
-                  <input 
-                    type="file" 
-                    accept=".pdf,.doc,.docx"
-                    onChange={(e) => setFile(e.target.files[0])} 
-                    required 
-                    style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '8px' }}
-                  />
-                </div>
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                  <button type="button" className="btn-secondary-large" onClick={() => setShowApplyModal(false)} style={{ flex: 1 }}>Cancel</button>
-                  <button type="submit" className="btn-primary-large" style={{ flex: 1 }}>Submit</button>
-                </div>
-              </form>
+              <>
+                <h2 style={{ marginBottom: '0.5rem' }}>Apply for {job.title}</h2>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>at {job.company}</p>
+                
+                <form onSubmit={handleApply} className="auth-form">
+                  {error && <div className="error-alert">{error}</div>}
+                  <div className="input-group">
+                    <label>Upload Resume (PDF or Word)</label>
+                    <input 
+                      type="file" 
+                      accept=".pdf,.doc,.docx"
+                      onChange={(e) => setFile(e.target.files[0])} 
+                      required 
+                      style={{ padding: '0.5rem', border: '1px solid var(--border)', borderRadius: '8px' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                    <button type="button" className="btn-secondary-large" onClick={() => setShowApplyModal(false)} style={{ flex: 1 }}>Cancel</button>
+                    <button type="submit" className="btn-primary-large" style={{ flex: 1 }}>Submit Application</button>
+                  </div>
+                </form>
+              </>
             )}
           </div>
         </div>
