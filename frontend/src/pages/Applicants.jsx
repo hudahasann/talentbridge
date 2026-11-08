@@ -10,7 +10,6 @@ function Applicants({ job, onClose }) {
   const fetchApplicants = async () => {
     try {
       const data = await getJobApplications(job._id);
-      // FIXED: Ensure we get the array correctly
       setApplicants(Array.isArray(data) ? data : data.applications || []);
     } catch (err) {
       console.error(err);
@@ -43,6 +42,24 @@ function Applicants({ job, onClose }) {
     } catch (err) {
       alert(err.message);
     }
+  };
+
+  // --- THE FIX FOR OPENING THE PDF ---
+  const handleOpenResume = (base64Data) => {
+    if (!base64Data) return;
+    
+    // Convert Base64 to Blob
+    const byteCharacters = atob(base64Data.split(',')[1]);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], {type: 'application/pdf'});
+
+    // Create a Blob URL and open it
+    const fileURL = URL.createObjectURL(blob);
+    window.open(fileURL, '_blank');
   };
 
   const columns = ['Applied', 'Interviewing', 'Hired', 'Rejected'];
@@ -101,15 +118,13 @@ function Applicants({ job, onClose }) {
                           
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
                             
-                            {/* FIXED: The href is now the base64 string */}
-                            <a 
-                              href={app.resume} 
-                              target="_blank" 
-                              rel="noreferrer" 
-                              style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: '600', textDecoration: 'underline', cursor: 'pointer' }}
+                            {/* FIXED BUTTON */}
+                            <button 
+                              onClick={() => handleOpenResume(app.resume)}
+                              style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: '600', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                             >
                               Resume
-                            </a>
+                            </button>
                             
                             <div style={{ display: 'flex', gap: '0.5rem' }}>
                               {col !== 'Applied' && (
