@@ -74,17 +74,52 @@ body {
 .btn-outline-small { background: white; border: 1px solid var(--border); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all var(--transition-fast); display: flex; align-items: center; gap: 0.5rem; }
 .btn-outline-small:hover { background: var(--bg-alt); border-color: var(--text-main); }
 
-/* --- AUTH FORMS --- */
+/* --- AUTH FORMS (FIXED) --- */
 .auth-container { min-height: calc(100vh - 72px); display: flex; align-items: center; justify-content: center; padding: 2rem; background: var(--bg-alt); }
 .auth-card { background: white; border: 1px solid var(--border); padding: 3rem; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: var(--shadow-lg); }
-.auth-card h2 { font-size: 2rem; margin-bottom: 0.5rem; font-weight: 800; text-align: center; color: var(--text-main); }
+.auth-card h2 { font-size: 2rem; margin-bottom: 0.5rem; font-weight: 800; text-align: center; color: var(--text-main); letter-spacing: -0.5px; }
 .auth-subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 2rem; text-align: center; }
 .auth-form { display: flex; flex-direction: column; gap: 1.25rem; }
 .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
 .input-group label { font-size: 0.9rem; color: var(--text-main); font-weight: 600; }
-.input-group input, .input-group textarea { background: white; border: 1px solid var(--border); padding: 0.9rem 1rem; border-radius: 8px; color: var(--text-main); font-size: 1rem; outline: none; font-family: 'Inter', sans-serif; transition: all var(--transition-fast); width: 100%; }
-.input-group input:focus, .input-group textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); }
-.helper-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+.input-group input, .input-group textarea, .input-group select { 
+  background: white; border: 1px solid var(--border); padding: 0.9rem 1rem; 
+  border-radius: 8px; color: var(--text-main); font-size: 1rem; 
+  outline: none; font-family: 'Inter', sans-serif; transition: all var(--transition-fast); width: 100%; 
+}
+.input-group input:focus, .input-group textarea:focus, .input-group select:focus { 
+  border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); 
+}
+
+/* Eye Icon (Positioned Correctly) */
+.password-input-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
+.password-input-wrapper input { width: 100%; padding-right: 3rem; }
+.password-input-wrapper input::-ms-reveal, .password-input-wrapper input::-ms-clear { display: none; }
+.eye-icon-btn { 
+  position: absolute; right: 1rem; background: none; border: none; 
+  color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; 
+  padding: 0; transition: color var(--transition-fast); z-index: 10; 
+}
+.eye-icon-btn:hover { color: var(--primary); }
+.eye-icon-btn:focus { outline: none; }
+
+/* Dropdown (Select Role) */
+.select-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
+.select-wrapper select { 
+  appearance: none; -webkit-appearance: none; -moz-appearance: none;
+  width: 100%; padding: 0.9rem 1rem; padding-right: 2.5rem; 
+  border: 1px solid var(--border); border-radius: 8px; 
+  background-color: white; color: var(--text-main); font-size: 1rem; 
+  font-family: 'Inter', sans-serif; cursor: pointer; transition: all var(--transition-fast); 
+}
+.select-wrapper select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); }
+.select-icon { position: absolute; right: 1rem; pointer-events: none; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
+
+/* Footer Links (Clickable) */
+.auth-footer { margin-top: 2rem; text-align: center; font-size: 0.95rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 1.5rem; position: relative; z-index: 10; }
+.auth-link { color: var(--primary); font-weight: 600; cursor: pointer; transition: color var(--transition-fast); }
+.auth-link:hover { color: var(--primary-hover); text-decoration: underline; }
+.error-alert { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; padding: 1rem; border-radius: 8px; font-size: 0.95rem; margin-bottom: 1rem; }
 
 /* --- ONBOARDING & PROFILE --- */
 .onboarding-container { min-height: calc(100vh - 72px); display: flex; align-items: center; justify-content: center; padding: 4rem 2rem; background: var(--bg-alt); }
@@ -109,30 +144,14 @@ body {
 .skill-tag button { background: none; border: none; color: var(--primary); font-size: 1.2rem; line-height: 1; cursor: pointer; }
 .skill-tag button:hover { color: #b91c1c; }
 
-/* IMAGE UPLOAD & DELETE */
+/* Image Upload */
 .image-upload-wrapper { display: flex; align-items: center; gap: 1rem; }
 .image-preview-container { position: relative; display: flex; align-items: center; gap: 0.5rem; }
 .image-preview-circle { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); }
 .image-preview-banner { width: 80px; height: 50px; border-radius: 8px; object-fit: cover; border: 2px solid var(--border); }
 .file-input-hidden { display: none; }
-
-.trash-btn {
-  background: transparent;
-  color: var(--text-muted);
-  border: none;
-  border-radius: 6px;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-.trash-btn:hover {
-  background: #f1f5f9;
-  color: #ef4444;
-}
+.trash-btn { background: transparent; color: var(--text-muted); border: none; border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition-fast); }
+.trash-btn:hover { background: #f1f5f9; color: #ef4444; }
 
 /* Profile View */
 .profile-header-banner { height: 180px; background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); position: relative; background-size: cover; background-position: center; }
