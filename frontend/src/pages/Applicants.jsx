@@ -10,7 +10,8 @@ function Applicants({ job, onClose }) {
   const fetchApplicants = async () => {
     try {
       const data = await getJobApplications(job._id);
-      setApplicants(data.applications);
+      // Make sure to access the array correctly
+      setApplicants(data.applications || data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -99,7 +100,16 @@ function Applicants({ job, onClose }) {
                           )}
                           
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
-                            <a href={app.resumeLink} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: '600' }}>Resume</a>
+                            
+                            {/* FIXED: Changed from app.resumeLink to app.resume */}
+                            <a 
+                              href={app.resume} 
+                              target="_blank" 
+                              rel="noreferrer" 
+                              style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: '600' }}
+                            >
+                              Resume
+                            </a>
                             
                             <div style={{ display: 'flex', gap: '0.5rem' }}>
                               {col !== 'Applied' && (
