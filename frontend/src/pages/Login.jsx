@@ -14,7 +14,15 @@ function Login({ setUser, setCurrentView }) {
       const data = await loginUser(email, password);
       localStorage.setItem('user', JSON.stringify(data));
       setUser(data);
-      setCurrentView(data.role === 'employer' ? 'dashboard' : 'jobs');
+      
+      // BULLETPROOF REDIRECT LOGIC:
+      if (data.role === 'applicant' && !data.profileComplete) {
+        setCurrentView('onboarding');
+      } else if (data.role === 'employer' || data.role === 'recruiter') {
+        setCurrentView('dashboard');
+      } else {
+        setCurrentView('jobs');
+      }
     } catch (err) { setError(err.message); }
   };
 
