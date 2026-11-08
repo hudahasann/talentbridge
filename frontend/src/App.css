@@ -2,7 +2,7 @@
 
 :root {
   --bg-main: #ffffff;
-  --bg-alt: #f8fafc;
+  --bg-alt: #f1f5f9; /* Slightly darker gray so the white card pops */
   --text-main: #0f172a;
   --text-muted: #64748b;
   --primary: #2563eb;
@@ -13,7 +13,7 @@
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -93,67 +93,88 @@ body {
 .input-group input:focus, .input-group textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); }
 .helper-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
 
-/* --- ONBOARDING PAGE --- */
+/* --- ONBOARDING PAGE (REFINED & PREMIUM) --- */
 .onboarding-container {
   min-height: calc(100vh - 72px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3rem 2rem;
+  padding: 4rem 2rem;
   background: var(--bg-alt);
 }
 
 .onboarding-card {
   background: white;
-  border-radius: 20px;
+  border-radius: 24px;
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--border);
   width: 100%;
-  max-width: 650px;
+  max-width: 700px; /* Wider card */
+  position: relative;
   overflow: hidden;
-  animation: slideUpFade 0.5s ease-out;
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Blue accent bar at the top */
+.onboarding-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #2563eb, #60a5fa, #2563eb);
+  background-size: 200% 100%;
+  animation: gradientMove 3s linear infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
 
 .onboarding-header {
   padding: 3rem 3rem 2rem;
   border-bottom: 1px solid var(--border);
   text-align: center;
-  position: relative;
 }
 
-.onboarding-progress {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  background: var(--border);
-}
-
-.progress-bar-fill {
-  height: 100%;
-  width: 100%;
-  background: var(--primary);
-  animation: fillProgress 1s ease-out forwards;
-}
-
-@keyframes fillProgress {
-  from { width: 0%; }
-  to { width: 100%; }
-}
-
-.onboarding-header h1 { font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+.onboarding-header h1 { font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem; letter-spacing: -1px; }
 .onboarding-header p { color: var(--text-muted); font-size: 1.05rem; }
 
 .onboarding-form {
   padding: 2.5rem 3rem 3rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.75rem;
+}
+
+/* Custom Inputs */
+.onboarding-form .input-group input, 
+.onboarding-form .input-group textarea {
+  background: #f8fafc;
+  border: 2px solid transparent;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all var(--transition-fast);
+}
+
+.onboarding-form .input-group input:hover, 
+.onboarding-form .input-group textarea:hover {
+  background: white;
+  border-color: var(--border-hover);
+}
+
+.onboarding-form .input-group input:focus, 
+.onboarding-form .input-group textarea:focus {
+  background: white;
+  border-color: var(--primary);
+  box-shadow: 0 4px 20px var(--primary-glow);
 }
 
 /* Custom Skill Tags */
 .skills-input-wrapper {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .skills-input-wrapper input {
@@ -161,22 +182,22 @@ body {
 }
 
 .add-skill-btn {
-  background: var(--primary);
+  background: var(--text-main);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0 1.5rem;
+  border-radius: 12px;
+  padding: 0 2rem;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
-.add-skill-btn:hover { background: var(--primary-hover); }
+.add-skill-btn:hover { background: var(--primary); transform: translateY(-2px); }
 
 .skills-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .skill-tag {
@@ -186,7 +207,7 @@ body {
   background: #eff6ff;
   color: var(--primary);
   padding: 0.4rem 0.8rem;
-  border-radius: 6px;
+  border-radius: 20px; /* Pill shape */
   font-size: 0.9rem;
   font-weight: 600;
   border: 1px solid #dbeafe;
@@ -203,11 +224,6 @@ body {
   transition: color var(--transition-fast);
 }
 .skill-tag button:hover { color: #b91c1c; }
-
-@keyframes popIn {
-  0% { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
 
 /* --- JOB DETAILS PAGE --- */
 .job-details-page { background: var(--bg-alt); min-height: calc(100vh - 72px); padding: 2rem 4rem 6rem; }
@@ -239,6 +255,7 @@ body {
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 2rem; animation: fadeIn 0.2s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
 .file-dropzone { border: 2px dashed var(--border-hover); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all var(--transition-fast); background: var(--bg-alt); display: flex; align-items: center; justify-content: center; }
 .file-dropzone:hover { border-color: var(--primary); background: #eff6ff; }
@@ -300,7 +317,6 @@ body {
 .success-icon-wrapper { width: 72px; height: 72px; border-radius: 50%; background: var(--primary-glow); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 .success-card h2 { color: var(--primary); margin-bottom: 0.5rem; }
 .success-card .auth-subtitle { margin-bottom: 0; }
-@keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
 /* --- HERO SECTION --- */
 .hero-section {
