@@ -7,8 +7,15 @@ export const register = async (req, res) => {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'User already exists' });
     
-    // Create user with the new fields automatically defaulting
-    const user = await User.create({ name, email, password, role, skills });
+    // Create user with safe defaults
+    const user = await User.create({ 
+      name, 
+      email, 
+      password, 
+      role, 
+      skills: skills || [], // Fallback to empty array if undefined
+      profileComplete: false // Explicitly set for new users
+    });
     
     req.session.userId = user._id;
     req.session.role = user.role;
@@ -17,7 +24,10 @@ export const register = async (req, res) => {
       _id: user._id, name: user.name, email: user.email, role: user.role, 
       skills: user.skills, headline: user.headline, bio: user.bio, profileComplete: user.profileComplete 
     });
-  } catch (err) { res.status(500).json({ message: err.message }); }
+  } catch (err) { 
+    console.error("Register Error:", err); // Added log to see the exact error
+    res.status(500).json({ message: err.message }); 
+  }
 };
 
 export const login = async (req, res) => {
@@ -28,7 +38,6 @@ export const login = async (req, res) => {
       req.session.userId = user._id;
       req.session.role = user.role;
       
-      // Return the new fields so the frontend knows their profile status
       res.json({ 
         _id: user._id, name: user.name, email: user.email, role: user.role, 
         skills: user.skills, headline: user.headline, bio: user.bio, profileComplete: user.profileComplete 
@@ -44,14 +53,13 @@ export const updateProfile = async (req, res) => {
   try {
     const { headline, bio, skills } = req.body;
     
-    // We use the session ID (set by our Vercel header fallback middleware)
     const user = await User.findById(req.session.userId);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     user.headline = headline || user.headline;
     user.bio = bio || user.bio;
     user.skills = skills || user.skills;
-    user.profileComplete = true; // Mark as complete!
+    user.profileComplete = true; 
 
     const updatedUser = await user.save();
     
@@ -60,6 +68,7 @@ export const updateProfile = async (req, res) => {
       skills: updatedUser.skills, headline: updatedUser.headline, bio: updatedUser.bio, profileComplete: updatedUser.profileComplete 
     });
   } catch (err) {
+    console.error("Update Profile Error:", err);
     res.status(500).json({ message: err.message });
   }
 };
