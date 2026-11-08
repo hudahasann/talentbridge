@@ -36,7 +36,7 @@ body {
 .app-container { display: flex; flex-direction: column; min-height: 100vh; }
 .main-content { flex: 1; }
 
-/* --- NAVBAR (THE FIX) --- */
+/* --- NAVBAR --- */
 .navbar {
   height: 72px;
   background: rgba(255, 255, 255, 0.85);
@@ -56,12 +56,8 @@ body {
 .nav-left { display: flex; align-items: center; gap: 3rem; }
 .nav-right { display: flex; align-items: center; gap: 1rem; }
 
-/* Force the user badge and logout button to sit side-by-side */
 .user-controls { 
-  display: flex; 
-  flex-direction: row; 
-  align-items: center; 
-  gap: 1rem; 
+  display: flex; flex-direction: row; align-items: center; gap: 1rem; 
 }
 
 .brand-logo { font-size: 1.5rem; font-weight: 800; cursor: pointer; letter-spacing: -1px; color: var(--primary); transition: transform var(--transition-fast); }
@@ -76,7 +72,7 @@ body {
   font-weight: 600; font-size: 0.95rem; color: var(--text-main); 
   padding: 0.5rem 1rem; background: var(--bg-alt); 
   border-radius: 8px; border: 1px solid var(--border); 
-  white-space: nowrap; /* Prevents text wrapping */
+  white-space: nowrap;
 }
 
 /* --- BUTTONS --- */
@@ -182,7 +178,7 @@ body {
 .footer-links a:hover { color: #ffffff; }
 .footer-bottom { text-align: center; color: #64748b; font-size: 0.9rem; border-top: 1px solid #1e293b; padding-top: 2rem; max-width: 1400px; margin: 0 auto; }
 
-/* --- AUTH FORMS (PROFESSIONAL OVERHAUL) --- */
+/* --- AUTH FORMS --- */
 .auth-container { min-height: calc(100vh - 72px); display: flex; align-items: center; justify-content: center; padding: 2rem; background: var(--bg-alt); }
 .auth-card { background: white; border: 1px solid var(--border); padding: 3rem; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: var(--shadow-lg); }
 .auth-card h2 { font-size: 2rem; margin-bottom: 0.5rem; font-weight: 800; text-align: center; color: var(--text-main); letter-spacing: -0.5px; }
@@ -207,7 +203,7 @@ body {
 .select-icon { position: absolute; right: 1rem; pointer-events: none; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
 .select-wrapper select option { padding: 1rem; background: white; color: var(--text-main); }
 
-/* --- PROFESSIONAL EYE ICON & HIDING BROWSER DEFAULT --- */
+/* --- PROFESSIONAL EYE ICON --- */
 .password-input-wrapper { position: relative; display: flex; align-items: center; }
 .password-input-wrapper input { width: 100%; padding-right: 3rem; }
 .password-input-wrapper input::-ms-reveal, .password-input-wrapper input::-ms-clear { display: none; }
@@ -246,7 +242,6 @@ body {
 .dashboard-header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -1px; color: var(--text-main); }
 .dashboard-header p { color: var(--text-muted); font-size: 1.05rem; }
 
-/* THE JOB CARD FIX - EVEN HEIGHTS & TEXT TRUNCATION */
 .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; align-items: stretch; }
 .job-card { 
   background: white; padding: 2rem; border-radius: 12px; border: 1px solid var(--border); 
@@ -258,18 +253,60 @@ body {
 .job-company { color: var(--primary); } .job-location { color: var(--text-muted); }
 .job-card h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-main); }
 
-/* Truncates long descriptions to 3 lines so cards stay equal height */
 .job-desc { 
   color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem; flex: 1; 
   display: -webkit-box; 
   -webkit-line-clamp: 3; 
-  line-clamp: 3; /* Standard property added to fix VS Code warning */
+  line-clamp: 3; 
   -webkit-box-orient: vertical; 
   overflow: hidden; 
 }
 
 .job-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 1.25rem; margin-top: auto; }
 .job-salary { font-weight: 700; font-size: 1.1rem; color: var(--text-main); }
+
+/* --- PREMIUM EMPTY STATE --- */
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: white;
+  padding: 5rem 2rem;
+  border-radius: 16px;
+  border: 1px dashed var(--border-hover);
+  max-width: 600px;
+  margin: 4rem auto;
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--primary-glow);
+  color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.empty-state-container h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.5px;
+}
+
+.empty-state-container p {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 450px;
+}
 
 /* --- MODALS & KANBAN --- */
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 2rem; }

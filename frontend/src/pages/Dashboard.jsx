@@ -15,7 +15,7 @@ function Dashboard({ user }) {
     try { const data = await getMyJobs(); setJobs(data); } catch (err) { console.error(err); }
   };
 
-  useEffect(() => { if (user && user.role === 'employer') fetchMyJobs(); }, [user]);
+  useEffect(() => { if (user && (user.role === 'employer' || user.role === 'recruiter')) fetchMyJobs(); }, [user]);
 
   const handleCreateJob = async (e) => {
     e.preventDefault();
@@ -28,33 +28,49 @@ function Dashboard({ user }) {
     } catch (err) { alert(err.message); }
   };
 
-  if (!user || user.role !== 'employer') return <div className="auth-container"><h2>Access Denied. Employers only.</h2></div>;
+  if (!user || (user.role !== 'employer' && user.role !== 'recruiter')) return <div className="auth-container"><h2>Access Denied. Employers/Recruiters only.</h2></div>;
 
   if (viewJob) return <JobDetails job={viewJob} user={user} onBack={() => setViewJob(null)} onApply={() => {}} />;
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <div><h1>Employer Dashboard</h1><p>Manage your job postings and candidate pipelines.</p></div>
+        <div>
+          <h1>Employer Dashboard</h1>
+          <p>Manage your job postings and candidate pipelines.</p>
+        </div>
         <button className="btn-primary-large" onClick={() => setShowModal(true)}>+ Post New Job</button>
       </div>
 
-      <div className="jobs-grid">
-        {jobs.length === 0 ? <p style={{ color: '#6b7280', gridColumn: '1 / -1' }}>You haven't posted any jobs yet.</p> : jobs.map(job => (
-          <div key={job._id} className="job-card" onClick={() => setViewJob(job)} style={{ cursor: 'pointer' }}>
-            <div className="job-card-header">
-              <span className="job-company">{job.company}</span>
-              <span className="job-location">{job.location} • {formatDate(job.createdAt)}</span>
-            </div>
-            <h3>{job.title}</h3>
-            <p className="job-desc">{job.description}</p>
-            <div className="job-footer">
-              <span className="job-salary">{job.salary || 'Salary not disclosed'}</span>
-              <button className="btn-primary-small" onClick={(e) => { e.stopPropagation(); setSelectedJob(job); }}>View Applicants</button>
-            </div>
+      {jobs.length === 0 ? (
+        /* PREMIUM EMPTY STATE */
+        <div className="empty-state-container">
+          <div className="empty-state-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
           </div>
-        ))}
-      </div>
+          <h2>Welcome to TalentBridge, {user.name}</h2>
+          <p>You haven't posted any jobs yet. Create your first job posting to start receiving applications from top talent.</p>
+          <button className="btn-primary-large" onClick={() => setShowModal(true)}>Create Your First Job</button>
+        </div>
+      ) : (
+        /* JOB GRID */
+        <div className="jobs-grid">
+          {jobs.map(job => (
+            <div key={job._id} className="job-card" onClick={() => setViewJob(job)} style={{ cursor: 'pointer' }}>
+              <div className="job-card-header">
+                <span className="job-company">{job.company}</span>
+                <span className="job-location">{job.location} • {formatDate(job.createdAt)}</span>
+              </div>
+              <h3>{job.title}</h3>
+              <p className="job-desc">{job.description}</p>
+              <div className="job-footer">
+                <span className="job-salary">{job.salary || 'Salary not disclosed'}</span>
+                <button className="btn-primary-small" onClick={(e) => { e.stopPropagation(); setSelectedJob(job); }}>View Applicants</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {showModal && (
         <div className="modal-overlay">
@@ -68,7 +84,7 @@ function Dashboard({ user }) {
                 <div className="input-group"><label>Salary</label><input type="text" value={newJob.salary} onChange={(e) => setNewJob({...newJob, salary: e.target.value})} /></div>
               </div>
               <div className="input-group"><label>Required Skills</label><input type="text" placeholder="e.g. React, Node.js, MongoDB" value={newJob.skills} onChange={(e) => setNewJob({...newJob, skills: e.target.value})} required /></div>
-              <div className="input-group"><label>Description</label><textarea rows="3" value={newJob.description} onChange={(e) => setNewJob({...newJob, description: e.target.value})} required style={{ padding: '1rem', borderRadius: '8px', border: '1px solid var(--border)', fontFamily: 'Inter', resize: 'vertical' }}></textarea></div>
+              <div className="input-group"><label>Description</label><textarea rows="3" value={newJob.description} onChange={(e) => setNewJob({...newJob, description: e.target.value})} required></textarea></div>
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                 <button type="button" className="btn-secondary-large" onClick={() => setShowModal(false)} style={{ flex: 1 }}>Cancel</button>
                 <button type="submit" className="btn-primary-large" style={{ flex: 1 }}>Publish Job</button>
