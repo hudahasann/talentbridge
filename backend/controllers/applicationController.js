@@ -28,8 +28,10 @@ export const applyToJob = async (req, res) => {
 
 export const getJobApplications = async (req, res) => {
   try {
-    const applications = await Application.find({ jobId: req.params.jobId }).populate('applicantId', 'name email');
-    res.json(applications); // Sending array directly
+    // FIXED: Added 'skills' to the populate string
+    const applications = await Application.find({ jobId: req.params.jobId })
+      .populate('applicantId', 'name email skills');
+    res.json(applications); 
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
