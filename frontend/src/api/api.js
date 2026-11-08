@@ -112,3 +112,14 @@ export const getMyApplications = async () => {
   });
   return handleResponse(res);
 };
+
+// --- MISSING FUNCTION ADDED HERE ---
+export const updateProfile = async (profileData) => {
+  const res = await fetch(`${API_URL}/auth/profile`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    credentials: 'include',
+    body: JSON.stringify(profileData),
+  });
+  return handleResponse(res);
+};
