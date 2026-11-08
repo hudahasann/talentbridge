@@ -15,9 +15,13 @@ function Login({ setUser, setCurrentView }) {
       localStorage.setItem('user', JSON.stringify(data));
       setUser(data);
       
-      // BULLETPROOF REDIRECT LOGIC:
-      if (data.role === 'applicant' && !data.profileComplete) {
-        setCurrentView('onboarding');
+      // STRICT CHECK
+      if (data.role === 'applicant') {
+        if (data.profileComplete === false) {
+          setCurrentView('onboarding');
+        } else {
+          setCurrentView('jobs');
+        }
       } else if (data.role === 'employer' || data.role === 'recruiter') {
         setCurrentView('dashboard');
       } else {

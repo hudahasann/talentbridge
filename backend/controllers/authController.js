@@ -7,14 +7,10 @@ export const register = async (req, res) => {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'User already exists' });
     
-    // Create user with safe defaults
     const user = await User.create({ 
-      name, 
-      email, 
-      password, 
-      role, 
-      skills: skills || [], // Fallback to empty array if undefined
-      profileComplete: false // Explicitly set for new users
+      name, email, password, role, 
+      skills: skills || [], 
+      profileComplete: false // Force boolean
     });
     
     req.session.userId = user._id;
@@ -22,10 +18,11 @@ export const register = async (req, res) => {
     
     res.status(201).json({ 
       _id: user._id, name: user.name, email: user.email, role: user.role, 
-      skills: user.skills, headline: user.headline, bio: user.bio, profileComplete: user.profileComplete 
+      skills: user.skills, headline: user.headline || '', bio: user.bio || '', 
+      profileComplete: user.profileComplete === true // Force boolean
     });
   } catch (err) { 
-    console.error("Register Error:", err); // Added log to see the exact error
+    console.error("Register Error:", err);
     res.status(500).json({ message: err.message }); 
   }
 };
@@ -40,7 +37,9 @@ export const login = async (req, res) => {
       
       res.json({ 
         _id: user._id, name: user.name, email: user.email, role: user.role, 
-        skills: user.skills, headline: user.headline, bio: user.bio, profileComplete: user.profileComplete 
+        skills: user.skills || [], headline: user.headline || '', bio: user.bio || '', 
+        // THIS IS THE CRITICAL FIX: Force it to be a strict boolean
+        profileComplete: user.profileComplete === true 
       });
     } else { res.status(401).json({ message: 'Invalid email or password' }); }
   } catch (err) { res.status(500).json({ message: err.message }); }
@@ -48,7 +47,6 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => { req.session.destroy(); res.json({ message: 'Logged out' }); };
 
-// --- NEW ONBOARDING CONTROLLER ---
 export const updateProfile = async (req, res) => {
   try {
     const { headline, bio, skills } = req.body;
@@ -65,10 +63,8 @@ export const updateProfile = async (req, res) => {
     
     res.json({ 
       _id: updatedUser._id, name: updatedUser.name, email: updatedUser.email, role: updatedUser.role, 
-      skills: updatedUser.skills, headline: updatedUser.headline, bio: updatedUser.bio, profileComplete: updatedUser.profileComplete 
+      skills: updatedUser.skills, headline: updatedUser.headline, bio: updatedUser.bio, 
+      profileComplete: updatedUser.profileComplete === true
     });
-  } catch (err) {
-    console.error("Update Profile Error:", err);
-    res.status(500).json({ message: err.message });
-  }
+  } catch (err) { res.status(500).json({ message: err.message }); }
 };

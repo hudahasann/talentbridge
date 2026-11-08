@@ -8,10 +8,8 @@ const getHeaders = () => {
   };
 };
 
-// Helper to catch backend crashes
 const handleResponse = async (res) => {
   if (!res.ok) {
-    // If Vercel crashes, it sends HTML instead of JSON
     const text = await res.text();
     let errorMessage = 'An unexpected error occurred.';
     try {
@@ -33,6 +31,10 @@ export const loginUser = async (email, password) => {
     body: JSON.stringify({ email, password }),
   });
   const data = await handleResponse(res);
+  
+  // Debug log to verify what backend sends
+  console.log("Login Response:", data);
+
   if (data._id) localStorage.setItem('userId', data._id);
   return data;
 };
@@ -113,7 +115,6 @@ export const getMyApplications = async () => {
   return handleResponse(res);
 };
 
-// --- MISSING FUNCTION ADDED HERE ---
 export const updateProfile = async (profileData) => {
   const res = await fetch(`${API_URL}/auth/profile`, {
     method: 'PUT',

@@ -19,8 +19,7 @@ function App() {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
       
-      // BULLETPROOF REDIRECT ON REFRESH:
-      if (parsedUser.role === 'applicant' && !parsedUser.profileComplete) {
+      if (parsedUser.role === 'applicant' && parsedUser.profileComplete === false) {
         setCurrentView('onboarding');
       } else if (parsedUser.role === 'employer' || parsedUser.role === 'recruiter') {
         setCurrentView('dashboard');
