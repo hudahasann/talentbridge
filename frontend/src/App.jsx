@@ -6,6 +6,7 @@ import JobBoard from './pages/JobBoard';
 import Dashboard from './pages/Dashboard';
 import MyApplications from './pages/MyApplications';
 import Landing from './pages/Landing';
+import Onboarding from './pages/Onboarding'; // <-- IMPORT THIS
 import Navbar from './components/Navbar';
 
 function App() {
@@ -17,7 +18,15 @@ function App() {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
-      setCurrentView(parsedUser.role === 'employer' ? 'dashboard' : 'jobs');
+      
+      // REDIRECT LOGIC
+      if (parsedUser.role === 'applicant' && !parsedUser.profileComplete) {
+        setCurrentView('onboarding');
+      } else if (parsedUser.role === 'employer' || parsedUser.role === 'recruiter') {
+        setCurrentView('dashboard');
+      } else {
+        setCurrentView('jobs');
+      }
     }
   }, []);
 
@@ -36,6 +45,7 @@ function App() {
         {currentView === 'landing' && <Landing setCurrentView={setCurrentView} />}
         {currentView === 'login' && <Login setUser={setUser} setCurrentView={setCurrentView} />}
         {currentView === 'register' && <Register setUser={setUser} setCurrentView={setCurrentView} />}
+        {currentView === 'onboarding' && <Onboarding user={user} setUser={setUser} setCurrentView={setCurrentView} />} {/* <-- ADD THIS */}
         {currentView === 'jobs' && <JobBoard user={user} />}
         {currentView === 'dashboard' && <Dashboard user={user} />}
         {currentView === 'my-applications' && <MyApplications setCurrentView={setCurrentView} />}
