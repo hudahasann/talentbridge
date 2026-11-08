@@ -9,20 +9,24 @@ function Onboarding({ user, setUser, setCurrentView }) {
   const [skillInput, setSkillInput] = useState('');
   const [skills, setSkills] = useState(user?.skills || []);
   
-  // Base64 image states
+  // Image states
   const [profileImage, setProfileImage] = useState(user?.profileImage || '');
   const [coverImage, setCoverImage] = useState(user?.coverImage || '');
 
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Helper to handle image selection and convert to Base64
   const handleImageUpload = (e, setter) => {
     const file = e.target.files[0];
     if (file) {
+      // Optional: Check file size (e.g., max 2MB) to prevent DB bloat
+      if (file.size > 2 * 1024 * 1024) {
+        alert("File is too large. Please select an image under 2MB.");
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
-        setter(reader.result); // This sets the base64 string
+        setter(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -59,7 +63,7 @@ function Onboarding({ user, setUser, setCurrentView }) {
     }
   };
 
-  // --- VIEW MODE (READ ONLY) ---
+  // --- VIEW MODE ---
   if (!isEditing) {
     return (
       <div className="onboarding-container">
@@ -114,7 +118,7 @@ function Onboarding({ user, setUser, setCurrentView }) {
     );
   }
 
-  // --- EDIT MODE (THE FORM) ---
+  // --- EDIT MODE ---
   return (
     <div className="onboarding-container">
       <div className="onboarding-card">
@@ -132,7 +136,12 @@ function Onboarding({ user, setUser, setCurrentView }) {
             <div className="input-group">
               <label>Profile Photo</label>
               <div className="image-upload-wrapper">
-                {profileImage && <img src={profileImage} alt="Preview" className="image-preview-circle" />}
+                {profileImage && (
+                  <div className="image-preview-container">
+                    <img src={profileImage} alt="Preview" className="image-preview-circle" />
+                    <button type="button" className="remove-image-btn" onClick={() => setProfileImage('')}>×</button>
+                  </div>
+                )}
                 <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setProfileImage)} className="file-input-hidden" id="profile-upload" />
                 <label htmlFor="profile-upload" className="btn-outline-small" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
@@ -144,7 +153,12 @@ function Onboarding({ user, setUser, setCurrentView }) {
             <div className="input-group">
               <label>Cover Photo</label>
               <div className="image-upload-wrapper">
-                {coverImage && <img src={coverImage} alt="Preview" className="image-preview-banner" />}
+                {coverImage && (
+                  <div className="image-preview-container">
+                    <img src={coverImage} alt="Preview" className="image-preview-banner" />
+                    <button type="button" className="remove-image-btn" onClick={() => setCoverImage('')}>×</button>
+                  </div>
+                )}
                 <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setCoverImage)} className="file-input-hidden" id="cover-upload" />
                 <label htmlFor="cover-upload" className="btn-outline-small" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
