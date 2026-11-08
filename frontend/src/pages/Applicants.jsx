@@ -22,13 +22,28 @@ function Applicants({ job, onClose }) {
     fetchApplicants();
   }, [job]);
 
+  // --- BULLETPROOF MATCH CALCULATION ---
   const calculateMatch = (applicantSkills) => {
+    // 1. If the job has no required skills, everyone is a 100% match
     if (!job.skills || job.skills.length === 0) return 100;
+    
+    // 2. If the applicant has no skills, they are a 0% match
     if (!applicantSkills || applicantSkills.length === 0) return 0;
-    const matched = job.skills.filter(skill => 
-      applicantSkills.some(aSkill => aSkill.toLowerCase() === skill.toLowerCase())
-    );
-    return Math.round((matched.length / job.skills.length) * 100);
+
+    // 3. Clean up the arrays (lowercase, trim spaces) to compare accurately
+    const requiredSkills = job.skills.map(s => s.toLowerCase().trim());
+    const candidateSkills = applicantSkills.map(s => s.toLowerCase().trim());
+
+    // 4. Count how many required skills the candidate has
+    let matchCount = 0;
+    requiredSkills.forEach(reqSkill => {
+      if (candidateSkills.includes(reqSkill)) {
+        matchCount++;
+      }
+    });
+
+    // 5. Calculate percentage
+    return Math.round((matchCount / requiredSkills.length) * 100);
   };
 
   const handleMove = async (id, newStatus, feedback = null) => {
@@ -44,22 +59,21 @@ function Applicants({ job, onClose }) {
     }
   };
 
-  // --- THE FIX FOR OPENING THE PDF ---
   const handleOpenResume = (base64Data) => {
-    if (!base64Data) return;
-    
-    // Convert Base64 to Blob
-    const byteCharacters = atob(base64Data.split(',')[1]);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    if (!base64Data) return alert("No resume found for this applicant.");
+    try {
+      const byteCharacters = atob(base64Data.split(',')[1]);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {type: 'application/pdf'});
+      const fileURL = URL.createObjectURL(blob);
+      window.open(fileURL, '_blank');
+    } catch (e) {
+      alert("Failed to open resume.");
     }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], {type: 'application/pdf'});
-
-    // Create a Blob URL and open it
-    const fileURL = URL.createObjectURL(blob);
-    window.open(fileURL, '_blank');
   };
 
   const columns = ['Applied', 'Interviewing', 'Hired', 'Rejected'];
@@ -94,7 +108,9 @@ function Applicants({ job, onClose }) {
                   
                   <div className="kanban-cards">
                     {applicants.filter(a => a.status === col).map(app => {
+                      // Pass the applicant's skills to the function
                       const matchScore = calculateMatch(app.applicantId?.skills);
+                      
                       return (
                         <div key={app._id} className="kanban-card">
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
@@ -105,6 +121,8 @@ function Applicants({ job, onClose }) {
                               <h4 style={{ margin: 0, fontSize: '0.95rem' }}>{app.applicantId?.name || 'Unknown'}</h4>
                               <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)' }}>{app.applicantId?.email}</p>
                             </div>
+                            
+                            {/* STYLING FOR THE SCORE */}
                             <span className={`match-badge ${matchScore >= 70 ? 'high' : 'medium'}`} style={{ fontSize: '0.7rem' }}>
                               {matchScore}%
                             </span>
@@ -117,8 +135,6 @@ function Applicants({ job, onClose }) {
                           )}
                           
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
-                            
-                            {/* FIXED BUTTON */}
                             <button 
                               onClick={() => handleOpenResume(app.resume)}
                               style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: '600', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
