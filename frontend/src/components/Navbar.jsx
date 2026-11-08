@@ -11,10 +11,7 @@ function Navbar({ user, setCurrentView, currentView, handleLogout }) {
               <>
                 <button className="nav-link-btn" onClick={() => setCurrentView('jobs')}>Job Board</button>
                 <button className="nav-link-btn" onClick={() => setCurrentView('my-applications')}>My Applications</button>
-                {/* Safety Net Button */}
-                {!user.profileComplete && (
-                  <button className="nav-link-btn" style={{ color: 'var(--primary)', fontWeight: 'bold' }} onClick={() => setCurrentView('onboarding')}>Complete Profile</button>
-                )}
+                <button className="nav-link-btn" onClick={() => setCurrentView('onboarding')}>My Profile</button>
               </>
             )}
             {user && (user.role === 'employer' || user.role === 'recruiter') && (

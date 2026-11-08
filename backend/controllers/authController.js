@@ -17,13 +17,8 @@ export const register = async (req, res) => {
     req.session.role = user.role;
     
     res.status(201).json({ 
-      _id: user._id, 
-      name: user.name, 
-      email: user.email, 
-      role: user.role, 
-      skills: user.skills || [], 
-      headline: user.headline || '', 
-      bio: user.bio || '', 
+      _id: user._id, name: user.name, email: user.email, role: user.role, 
+      skills: user.skills, headline: user.headline || '', bio: user.bio || '', 
       profileComplete: false 
     });
   } catch (err) { 
@@ -37,28 +32,17 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
-
+    if (!user) return res.status(401).json({ message: 'Invalid email or password' });
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
+    if (!isMatch) return res.status(401).json({ message: 'Invalid email or password' });
 
     req.session.userId = user._id;
     req.session.role = user.role;
     
-    // BULLETPROOF: Force strict boolean and default values for everything
     res.json({ 
-      _id: user._id, 
-      name: user.name, 
-      email: user.email, 
-      role: user.role, 
-      skills: user.skills || [], 
-      headline: user.headline || '', 
-      bio: user.bio || '', 
-      profileComplete: user.profileComplete === true // Strict boolean
+      _id: user._id, name: user.name, email: user.email, role: user.role, 
+      skills: user.skills || [], headline: user.headline || '', bio: user.bio || '', 
+      profileComplete: user.profileComplete === true 
     });
     
   } catch (err) { 
@@ -87,13 +71,8 @@ export const updateProfile = async (req, res) => {
     const updatedUser = await user.save();
     
     res.json({ 
-      _id: updatedUser._id, 
-      name: updatedUser.name, 
-      email: updatedUser.email, 
-      role: updatedUser.role, 
-      skills: updatedUser.skills || [], 
-      headline: updatedUser.headline || '', 
-      bio: updatedUser.bio || '', 
+      _id: updatedUser._id, name: updatedUser.name, email: updatedUser.email, role: updatedUser.role, 
+      skills: updatedUser.skills || [], headline: updatedUser.headline || '', bio: updatedUser.bio || '', 
       profileComplete: true 
     });
   } catch (err) { 

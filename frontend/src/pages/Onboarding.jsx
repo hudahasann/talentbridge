@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { updateProfile } from '../api/api';
 
 function Onboarding({ user, setUser, setCurrentView }) {
-  const [headline, setHeadline] = useState('');
-  const [bio, setBio] = useState('');
+  // Pre-fill the form if the user already has data
+  const [headline, setHeadline] = useState(user?.headline || '');
+  const [bio, setBio] = useState(user?.bio || '');
   const [skillInput, setSkillInput] = useState('');
-  const [skills, setSkills] = useState([]);
+  const [skills, setSkills] = useState(user?.skills || []);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -30,7 +31,7 @@ function Onboarding({ user, setUser, setCurrentView }) {
       const updatedUser = await updateProfile({ headline, bio, skills });
       localStorage.setItem('user', JSON.stringify(updatedUser));
       setUser(updatedUser);
-      setCurrentView('jobs'); // Send them to job board after completion
+      setCurrentView('jobs'); 
     } catch (err) {
       setError(err.message);
       setIsSubmitting(false);
@@ -45,8 +46,8 @@ function Onboarding({ user, setUser, setCurrentView }) {
           <div className="onboarding-progress">
             <div className="progress-bar-fill"></div>
           </div>
-          <h1>Complete Your Profile</h1>
-          <p>Let employers know who you are. This will take less than 2 minutes.</p>
+          <h1>{user?.profileComplete ? 'Update Your Profile' : 'Complete Your Profile'}</h1>
+          <p>{user?.profileComplete ? 'Keep your details up to date.' : 'Let employers know who you are. This will take less than 2 minutes.'}</p>
         </div>
 
         {error && <div className="error-alert">{error}</div>}
@@ -100,7 +101,7 @@ function Onboarding({ user, setUser, setCurrentView }) {
           </div>
 
           <button type="submit" className="btn-primary-large full-width" disabled={isSubmitting}>
-            {isSubmitting ? 'Saving...' : 'Save & Continue to Job Board'}
+            {isSubmitting ? 'Saving...' : (user?.profileComplete ? 'Save Changes' : 'Save & Continue to Job Board')}
           </button>
         </form>
       </div>
