@@ -15,8 +15,13 @@ const userSchema = new mongoose.Schema({
   
 }, { timestamps: true });
 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next(); // Added return here to prevent double hashing
+// MODERN MONGOOSE STYLE: No 'next' callback needed
+userSchema.pre('save', async function () {
+  // Only hash the password if it has been modified (or is new)
+  if (!this.isModified('password')) {
+    return; // Just return, no next() needed
+  }
+  
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
