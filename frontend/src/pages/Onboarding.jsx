@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { updateProfile } from '../api/api';
 
 function Onboarding({ user, setUser, setCurrentView }) {
-  // If profile is already complete, default to View Mode. Otherwise, Edit Mode.
   const [isEditing, setIsEditing] = useState(!user?.profileComplete);
   
   const [headline, setHeadline] = useState(user?.headline || '');
@@ -34,7 +33,7 @@ function Onboarding({ user, setUser, setCurrentView }) {
       localStorage.setItem('user', JSON.stringify(updatedUser));
       setUser(updatedUser);
       setIsSubmitting(false);
-      setIsEditing(false); // Switch back to View Mode after saving
+      setIsEditing(false);
     } catch (err) {
       setError(err.message);
       setIsSubmitting(false);
@@ -106,39 +105,20 @@ function Onboarding({ user, setUser, setCurrentView }) {
         <form onSubmit={handleSubmit} className="onboarding-form">
           <div className="input-group">
             <label>Professional Headline</label>
-            <input 
-              type="text" 
-              placeholder="e.g. Senior Frontend Engineer" 
-              value={headline}
-              onChange={(e) => setHeadline(e.target.value)}
-              required
-            />
+            <input type="text" placeholder="e.g. Senior Frontend Engineer" value={headline} onChange={(e) => setHeadline(e.target.value)} required />
           </div>
 
           <div className="input-group">
             <label>Bio</label>
-            <textarea 
-              rows="4" 
-              placeholder="Tell us about your experience..." 
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              required
-            />
+            <textarea rows="4" placeholder="Tell us about your experience..." value={bio} onChange={(e) => setBio(e.target.value)} required />
           </div>
 
           <div className="input-group">
             <label>Skills</label>
             <div className="skills-input-wrapper">
-              <input 
-                type="text" 
-                placeholder="Type a skill and press Enter" 
-                value={skillInput}
-                onChange={(e) => setSkillInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAddSkill(e)}
-              />
+              <input type="text" placeholder="Type a skill and press Enter" value={skillInput} onChange={(e) => setSkillInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddSkill(e)} />
               <button type="button" onClick={handleAddSkill} className="add-skill-btn">Add</button>
             </div>
-            
             <div className="skills-tags">
               {skills.map((skill, index) => (
                 <span key={index} className="skill-tag">
