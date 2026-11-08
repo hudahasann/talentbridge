@@ -42,6 +42,7 @@ export const login = async (req, res) => {
     res.json({ 
       _id: user._id, name: user.name, email: user.email, role: user.role, 
       skills: user.skills || [], headline: user.headline || '', bio: user.bio || '', 
+      profileImage: user.profileImage || '', coverImage: user.coverImage || '',
       profileComplete: user.profileComplete === true 
     });
     
@@ -58,7 +59,7 @@ export const logout = (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { headline, bio, skills } = req.body;
+    const { headline, bio, skills, profileImage, coverImage } = req.body;
     
     const user = await User.findById(req.session.userId);
     if (!user) return res.status(404).json({ message: 'User not found' });
@@ -66,6 +67,8 @@ export const updateProfile = async (req, res) => {
     user.headline = headline || user.headline;
     user.bio = bio || user.bio;
     user.skills = skills || user.skills;
+    user.profileImage = profileImage || user.profileImage;
+    user.coverImage = coverImage || user.coverImage;
     user.profileComplete = true; 
 
     const updatedUser = await user.save();
@@ -73,6 +76,7 @@ export const updateProfile = async (req, res) => {
     res.json({ 
       _id: updatedUser._id, name: updatedUser.name, email: updatedUser.email, role: updatedUser.role, 
       skills: updatedUser.skills || [], headline: updatedUser.headline || '', bio: updatedUser.bio || '', 
+      profileImage: updatedUser.profileImage || '', coverImage: updatedUser.coverImage || '',
       profileComplete: true 
     });
   } catch (err) { 

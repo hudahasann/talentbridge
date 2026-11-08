@@ -8,6 +8,11 @@ function Onboarding({ user, setUser, setCurrentView }) {
   const [bio, setBio] = useState(user?.bio || '');
   const [skillInput, setSkillInput] = useState('');
   const [skills, setSkills] = useState(user?.skills || []);
+  
+  // New fields for photos
+  const [profileImage, setProfileImage] = useState(user?.profileImage || '');
+  const [coverImage, setCoverImage] = useState(user?.coverImage || '');
+
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -29,7 +34,9 @@ function Onboarding({ user, setUser, setCurrentView }) {
     setIsSubmitting(true);
 
     try {
-      const updatedUser = await updateProfile({ headline, bio, skills });
+      const updatedUser = await updateProfile({ 
+        headline, bio, skills, profileImage, coverImage 
+      });
       localStorage.setItem('user', JSON.stringify(updatedUser));
       setUser(updatedUser);
       setIsSubmitting(false);
@@ -45,8 +52,16 @@ function Onboarding({ user, setUser, setCurrentView }) {
     return (
       <div className="onboarding-container">
         <div className="profile-view-card">
-          <div className="profile-header-banner">
-            <div className="profile-avatar-large">{user?.name?.charAt(0)}</div>
+          
+          {/* Cover Photo */}
+          <div className="profile-header-banner" style={user?.coverImage ? { backgroundImage: `url(${user.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
+            <div className="profile-avatar-large">
+              {user?.profileImage ? (
+                <img src={user.profileImage} alt="Profile" className="avatar-image" />
+              ) : (
+                user?.name?.charAt(0)
+              )}
+            </div>
           </div>
           
           <div className="profile-view-content">
@@ -93,9 +108,6 @@ function Onboarding({ user, setUser, setCurrentView }) {
     <div className="onboarding-container">
       <div className="onboarding-card">
         <div className="onboarding-header">
-          <div className="onboarding-progress">
-            <div className="progress-bar-fill"></div>
-          </div>
           <h1>{user?.profileComplete ? 'Edit Your Profile' : 'Complete Your Profile'}</h1>
           <p>{user?.profileComplete ? 'Update your details below.' : 'Let employers know who you are.'}</p>
         </div>
@@ -103,6 +115,19 @@ function Onboarding({ user, setUser, setCurrentView }) {
         {error && <div className="error-alert">{error}</div>}
 
         <form onSubmit={handleSubmit} className="onboarding-form">
+          
+          {/* Image URL inputs for now */}
+          <div className="form-row">
+            <div className="input-group">
+              <label>Profile Photo URL</label>
+              <input type="text" placeholder="https://..." value={profileImage} onChange={(e) => setProfileImage(e.target.value)} />
+            </div>
+            <div className="input-group">
+              <label>Cover Photo URL</label>
+              <input type="text" placeholder="https://..." value={coverImage} onChange={(e) => setCoverImage(e.target.value)} />
+            </div>
+          </div>
+
           <div className="input-group">
             <label>Professional Headline</label>
             <input type="text" placeholder="e.g. Senior Frontend Engineer" value={headline} onChange={(e) => setHeadline(e.target.value)} required />
