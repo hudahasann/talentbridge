@@ -6,6 +6,9 @@ function Applicants({ job, onClose }) {
   const [loading, setLoading] = useState(true);
   const [feedbackModal, setFeedbackModal] = useState(null);
   const [feedbackText, setFeedbackText] = useState('');
+  
+  // NEW STATE FOR THE PROFILE MODAL
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
 
   const fetchApplicants = async () => {
     try {
@@ -24,17 +27,12 @@ function Applicants({ job, onClose }) {
 
   // --- BULLETPROOF MATCH CALCULATION ---
   const calculateMatch = (applicantSkills) => {
-    // 1. If the job has no required skills, everyone is a 100% match
     if (!job.skills || job.skills.length === 0) return 100;
-    
-    // 2. If the applicant has no skills, they are a 0% match
     if (!applicantSkills || applicantSkills.length === 0) return 0;
 
-    // 3. Clean up the arrays (lowercase, trim spaces) to compare accurately
     const requiredSkills = job.skills.map(s => s.toLowerCase().trim());
     const candidateSkills = applicantSkills.map(s => s.toLowerCase().trim());
 
-    // 4. Count how many required skills the candidate has
     let matchCount = 0;
     requiredSkills.forEach(reqSkill => {
       if (candidateSkills.includes(reqSkill)) {
@@ -42,7 +40,6 @@ function Applicants({ job, onClose }) {
       }
     });
 
-    // 5. Calculate percentage
     return Math.round((matchCount / requiredSkills.length) * 100);
   };
 
@@ -108,21 +105,31 @@ function Applicants({ job, onClose }) {
                   
                   <div className="kanban-cards">
                     {applicants.filter(a => a.status === col).map(app => {
-                      // Pass the applicant's skills to the function
                       const matchScore = calculateMatch(app.applicantId?.skills);
                       
                       return (
                         <div key={app._id} className="kanban-card">
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#e0e7ff', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700' }}>
-                              {app.applicantId?.name?.charAt(0) || '?'}
+                          
+                          {/* CLICKABLE CANDIDATE HEADER */}
+                          <div 
+                            onClick={() => setSelectedCandidate(app.applicantId)} 
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', cursor: 'pointer' }}
+                            title="View Full Profile"
+                          >
+                            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#e0e7ff', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', overflow: 'hidden' }}>
+                              {app.applicantId?.profileImage ? (
+                                <img src={app.applicantId.profileImage} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              ) : (
+                                app.applicantId?.name?.charAt(0) || '?'
+                              )}
                             </div>
                             <div style={{ flex: 1 }}>
-                              <h4 style={{ margin: 0, fontSize: '0.95rem' }}>{app.applicantId?.name || 'Unknown'}</h4>
+                              <h4 style={{ margin: 0, fontSize: '0.95rem', textDecoration: 'underline', color: 'var(--primary)' }}>
+                                {app.applicantId?.name || 'Unknown'}
+                              </h4>
                               <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)' }}>{app.applicantId?.email}</p>
                             </div>
                             
-                            {/* STYLING FOR THE SCORE */}
                             <span className={`match-badge ${matchScore >= 70 ? 'high' : 'medium'}`} style={{ fontSize: '0.7rem' }}>
                               {matchScore}%
                             </span>
@@ -174,6 +181,47 @@ function Applicants({ job, onClose }) {
         </div>
       </div>
 
+      {/* --- NEW CANDIDATE PROFILE MODAL --- */}
+      {selectedCandidate && (
+        <div className="modal-overlay" style={{ zIndex: 1100 }} onClick={() => setSelectedCandidate(null)}>
+          <div className="profile-view-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '700px', margin: '0 1rem' }}>
+            <div className="profile-header-banner" style={selectedCandidate.coverImage ? { backgroundImage: `url(${selectedCandidate.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
+              <div className="profile-avatar-large">
+                {selectedCandidate.profileImage ? (
+                  <img src={selectedCandidate.profileImage} alt="Profile" className="avatar-image" />
+                ) : (
+                  selectedCandidate.name?.charAt(0)
+                )}
+              </div>
+            </div>
+            <div className="profile-view-content" style={{ padding: '4rem 2rem 2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                <div>
+                  <h1 style={{ fontSize: '1.8rem', marginBottom: '0.25rem' }}>{selectedCandidate.name}</h1>
+                  <p className="profile-headline-text">{selectedCandidate.headline || 'Applicant'}</p>
+                </div>
+                <button className="btn-outline-small" onClick={() => setSelectedCandidate(null)}>Close</button>
+              </div>
+
+              <div className="profile-section">
+                <h3>About</h3>
+                <p>{selectedCandidate.bio || 'No bio provided.'}</p>
+              </div>
+
+              <div className="profile-section">
+                <h3>Skills</h3>
+                <div className="skills-tags">
+                  {selectedCandidate.skills?.length > 0 ? selectedCandidate.skills.map((skill, i) => (
+                    <span key={i} className="skill-tag read-only-tag">{skill}</span>
+                  )) : <p style={{ color: 'var(--text-muted)' }}>No skills listed.</p>}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Feedback Modal */}
       {feedbackModal && (
         <div className="modal-overlay" style={{ zIndex: 1100 }}>
           <div className="auth-card" style={{ maxWidth: '400px' }}>
