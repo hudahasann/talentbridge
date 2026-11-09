@@ -28,7 +28,6 @@ export const applyToJob = async (req, res) => {
 
 export const getJobApplications = async (req, res) => {
   try {
-    // FIXED: Added 'skills' to the populate string
     const applications = await Application.find({ jobId: req.params.jobId })
       .populate('applicantId', 'name email skills');
     res.json(applications); 
@@ -43,12 +42,16 @@ export const updateApplicationStatus = async (req, res) => {
     const application = await Application.findById(req.params.id);
     if (!application) return res.status(404).json({ message: 'Application not found' });
     
+    // Update the status and feedback
     application.status = status;
     if (feedback) application.feedback = feedback;
-    await application.save();
+    
+    // Save without running full validation on legacy fields (like missing resume)
+    await application.save({ validateBeforeSave: false });
     
     res.json(application);
   } catch (err) {
+    console.error("Update Status Error:", err);
     res.status(500).json({ message: err.message });
   }
 };
