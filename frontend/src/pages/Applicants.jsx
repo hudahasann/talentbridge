@@ -135,7 +135,8 @@ function Applicants({ job, onClose }) {
                             </span>
                           </div>
 
-                          {app.feedback && (
+                          {/* THE FIX: Only show if status is Rejected */}
+                          {app.status === 'Rejected' && app.feedback && (
                             <p style={{ fontSize: '0.7rem', color: '#b91c1c', background: '#fef2f2', padding: '0.4rem', borderRadius: '4px', marginBottom: '0.5rem' }}>
                               Reason: {app.feedback}
                             </p>
