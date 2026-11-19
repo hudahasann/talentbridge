@@ -44,6 +44,12 @@ function Applicants({ job, onClose }) {
   };
 
   const handleMove = async (id, newStatus, feedback = null) => {
+    // DATA VALIDATION FIX: Block empty or spaces-only feedback for Rejection
+    if (newStatus === 'Rejected' && (!feedback || feedback.trim() === '')) {
+      alert("Please provide a valid reason for rejection.");
+      return; // Stop the submission
+    }
+
     try {
       await updateApplicationStatus(id, newStatus, feedback);
       setApplicants(applicants.map(app => 

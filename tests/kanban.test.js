@@ -1,95 +1,159 @@
-import { Selector, Role } from 'testcafe';
+import { Selector, Role, ClientFunction } from 'testcafe';
 
-// --- CONFIGURATION ---
 const BASE_URL = 'https://talentbridge-two-nu.vercel.app/';
 const RECRUITER_EMAIL = 'qa.recruiter1@test.com';
-const RECRUITER_PASS = 'password123'; 
+const PASSWORD = 'password123'; 
 
-// 1. SETUP THE RECRUITER ROLE
+// 1. Login Role
 const recruiterRole = Role(BASE_URL, async t => {
-    // 1. Click Sign In
-    await t
-        .click(Selector('button').withText('Sign In'))
-        .wait(1500); 
-
-    // 2. Type credentials and click
-    await t
-        .typeText(Selector('input[placeholder="Enter your email"]'), RECRUITER_EMAIL)
-        .typeText(Selector('input[placeholder="Enter your password"]'), RECRUITER_PASS)
-        .click(Selector('button').withText('Sign In').nth(1)); 
-
-    // 3. THE FIX: Wait until the Dashboard is fully loaded by looking for the "View Applicants" button
-    // This gives Vercel up to 15 seconds to respond and React to render the page
+    await t.click(Selector('button').withText('Sign In')).wait(1500);
+    await t.typeText(Selector('input[placeholder="Enter your email"]'), RECRUITER_EMAIL)
+           .typeText(Selector('input[placeholder="Enter your password"]'), PASSWORD)
+           .click(Selector('button').withText('Sign In').nth(1));
     await t.expect(Selector('button').withText('View Applicants').exists).ok({ timeout: 15000 });
 });
 
-fixture `TalentBridge - Kanban Board`
+// 2. Auto-Reset Helper
+async function resetBoard(t) {
+    await t.useRole(recruiterRole);
+    await t.click(Selector('button').withText('View Applicants')).wait(1500);
+    
+    const otherColumns = ['INTERVIEWING', 'HIRED', 'REJECTED'];
+    for (const col of otherColumns) {
+        const colSelector = Selector('.kanban-column').withText(col);
+        const moveBackBtn = colSelector.find('button[title="Move Back"]');
+        
+        while (await moveBackBtn.count > 0) {
+            await t.click(moveBackBtn.nth(0)).wait(800);
+        }
+    }
+    await t.click(Selector('button').withText('✕')).wait(500);
+}
+
+fixture `TalentBridge - Kanban Board Deep Testing`
     .page `${BASE_URL}`;
 
-// --- TEST CASES ---
-
-test('TC-01: Verify Kanban Board loads with correct applicants and match scores', async t => {
+test('ST-01: Status transition Applied to Interviewing', async t => {
+    await resetBoard(t);
     await t.useRole(recruiterRole);
-
-    // Dashboard is already loaded because of the Role check above
-    await t
-        .click(Selector('button').withText('View Applicants'))
-        .wait(2000);
-
-    await t.takeScreenshot('TC01_Kanban_Board_Loaded.png');
-
-    const score100 = Selector('.match-badge').withText('100%');
-    const score67 = Selector('.match-badge').withText('67%');
-    const score0 = Selector('.match-badge').withText('0%');
-
-    await t
-        .expect(score100.exists).ok()
-        .expect(score67.exists).ok()
-        .expect(score0.exists).ok();
+    await t.click(Selector('button').withText('View Applicants')).wait(1500);
+    
+    const card = Selector('.kanban-card').withText('Applicant 1');
+    await t.click(card.find('button[title="Move Forward"]')).wait(1000);
+    await t.expect(Selector('.kanban-column').withText('INTERVIEWING').find('.kanban-card').withText('Applicant 1').exists).ok();
+    await t.click(Selector('button').withText('✕'));
 });
 
-test('TC-02: Move Applicant 1 from Applied to Interviewing', async t => {
+test('ST-02: Status transition Interviewing to Hired', async t => {
+    await resetBoard(t);
     await t.useRole(recruiterRole);
+    await t.click(Selector('button').withText('View Applicants')).wait(1500);
     
-    await t
-        .click(Selector('button').withText('View Applicants'))
-        .wait(2000);
-
-    const applicant1Card = Selector('.kanban-card').withText('Applicant 1');
-    const moveForwardBtn = applicant1Card.find('button[title="Move Forward"]');
-
-    await t
-        .click(moveForwardBtn)
-        .wait(1500);
-
-    await t.takeScreenshot('TC02_Moved_To_Interviewing.png');
-
-    const interviewingColumn = Selector('.kanban-column').withText('INTERVIEWING');
-    await t.expect(interviewingColumn.find('.kanban-card').withText('Applicant 1').exists).ok();
+    const card = Selector('.kanban-card').withText('Applicant 1');
+    await t.click(card.find('button[title="Move Forward"]')).wait(1000);
+    await t.click(card.find('button[title="Move Forward"]')).wait(1000);
+    await t.expect(Selector('.kanban-column').withText('HIRED').find('.kanban-card').withText('Applicant 1').exists).ok();
+    await t.click(Selector('button').withText('✕'));
 });
 
-test('TC-03: Reject Applicant 3 with a reason', async t => {
+test('ST-09: Double click moves one stage only', async t => {
+    await resetBoard(t);
+    await t.useRole(recruiterRole);
+    await t.click(Selector('button').withText('View Applicants')).wait(1500);
+    
+    const card = Selector('.kanban-card').withText('Applicant 1');
+    const forwardBtn = card.find('button[title="Move Forward"]');
+    
+    await t.doubleClick(forwardBtn).wait(1500);
+    await t.expect(Selector('.kanban-column').withText('INTERVIEWING').find('.kanban-card').withText('Applicant 1').exists).ok();
+    await t.click(Selector('button').withText('✕'));
+});
+
+test('ST-10: Update status to invalid value via API', async t => {
+    await resetBoard(t);
     await t.useRole(recruiterRole);
     
-    await t
-        .click(Selector('button').withText('View Applicants'))
-        .wait(2000);
+    await t.click(Selector('button').withText('View Applicants')).wait(1500);
+    
+    const sendInvalidStatus = ClientFunction(() => {
+        const appId = '65f1a2b3c4d5e6f7a8b9c0d1'; 
+        return fetch(`/api/applications/${appId}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'Archived' })
+        }).then(res => res.status);
+    });
+    
+    const status = await sendInvalidStatus();
+    await t.expect([400, 401, 404].includes(status)).ok();
+    await t.click(Selector('button').withText('✕'));
+});
 
-    const applicant3Card = Selector('.kanban-card').withText('Applicant 3');
-    const rejectBtn = applicant3Card.find('button.reject-btn');
+test('FB-02: Reject with reason shows on card', async t => {
+    await resetBoard(t);
+    await t.useRole(recruiterRole);
+    await t.click(Selector('button').withText('View Applicants')).wait(1500);
+    
+    const card = Selector('.kanban-card').withText('Applicant 3');
+    await t.click(card.find('button.reject-btn')).wait(800);
+    await t.typeText(Selector('textarea'), 'Missing React skills.').click(Selector('button').withText('Submit')).wait(1000);
+           
+    const rejectedCol = Selector('.kanban-column').withText('REJECTED');
+    await t.expect(rejectedCol.find('.kanban-card').withText('Applicant 3').exists).ok();
+    await t.expect(rejectedCol.find('.kanban-card').withText('Missing React skills.').exists).ok();
+    await t.takeScreenshot('FB02_RejectedReason.png');
+    await t.click(Selector('button').withText('✕'));
+});
 
-    await t.click(rejectBtn).wait(1000);
+test('FB-05: Reject with spaces only is blocked', async t => {
+    await resetBoard(t);
+    await t.useRole(recruiterRole);
+    await t.click(Selector('button').withText('View Applicants')).wait(1500);
+    
+    const card = Selector('.kanban-card').withText('Applicant 3');
+    await t.click(card.find('button.reject-btn')).wait(800);
+    
+    // Type only spaces
+    await t.typeText(Selector('textarea'), '     ').click(Selector('button').withText('Submit')).wait(1000);
+    
+    // Should NOT move to Rejected (if it does, it's a defect)
+    await t.expect(Selector('.kanban-column').withText('REJECTED').find('.kanban-card').withText('Applicant 3').exists).notOk();
+    await t.click(Selector('button').withText('✕'));
+});
 
-    const reasonTextarea = Selector('textarea[placeholder="e.g., Lacks required React experience"]');
-    const submitBtn = Selector('button.btn-primary-large').withText('Submit');
+test('MS-02: Two of three skills matched (67%)', async t => {
+    await resetBoard(t);
+    await t.useRole(recruiterRole);
+    await t.click(Selector('button').withText('View Applicants')).wait(1500);
+    
+    const cardA2 = Selector('.kanban-card').withText('Applicant 2');
+    await t.expect(cardA2.find('.match-badge').withText('67%').exists).ok();
+    await t.click(Selector('button').withText('✕'));
+});
 
-    await t
-        .typeText(reasonTextarea, 'Skills do not match QA Test Job requirements.')
-        .click(submitBtn)
-        .wait(1500);
+test('MS-14: High match badge at 70% boundary', async t => {
+    await resetBoard(t);
+    await t.useRole(recruiterRole);
+    await t.click(Selector('button').withText('View Applicants')).wait(1500);
+    
+    const cardA1 = Selector('.kanban-card').withText('Applicant 1');
+    const cardA2 = Selector('.kanban-card').withText('Applicant 2');
+    
+    await t.expect(cardA1.find('.match-badge.high').exists).ok();
+    await t.expect(cardA2.find('.match-badge.high').exists).notOk();
+    await t.click(Selector('button').withText('✕'));
+});
 
-    await t.takeScreenshot('TC03_Rejected_With_Reason.png');
-
-    const rejectedColumn = Selector('.kanban-column').withText('REJECTED');
-    await t.expect(rejectedColumn.find('.kanban-card').withText('Applicant 3').exists).ok();
+test('PF-01: Board opens quickly (< 6s)', async t => {
+    await resetBoard(t);
+    await t.useRole(recruiterRole);
+    
+    const startTime = Date.now();
+    await t.click(Selector('button').withText('View Applicants'));
+    await t.expect(Selector('.kanban-card').exists).ok({ timeout: 6000 });
+    const loadTime = Date.now() - startTime;
+    
+    // We increased the threshold to 6000ms to account for Vercel cold starts
+    await t.expect(loadTime).lt(6000);
+    await t.click(Selector('button').withText('✕'));
 });
